@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -54,6 +55,9 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.progress_indicator)
     ProgressBar mProgressBar;
 
+    @Bind(R.id.text_no_places)
+    TextView mNoPlacesText;
+
     int PLACE_PICKER_REQUEST = 1020;
 
     private DataManager mDataManager;
@@ -71,8 +75,6 @@ public class MainActivity extends BaseActivity {
         setupToolbar();
         setupRecyclerView();
         loadLocations();
-
-        startActivity(new Intent(this, SearchActivity.class));
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -101,7 +103,8 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_github:
+            case R.id.action_open_search:
+                startActivity(new Intent(this, SearchActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -111,13 +114,6 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.fab_add_place)
     public void onAddPlaceCLick() {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-        List<String> ids = new ArrayList<>();
-        ids.add(String.valueOf(Place.TYPE_BAR));
-        ids.add(String.valueOf(Place.TYPE_FOOD));
-        ids.add(String.valueOf(Place.TYPE_CAFE));
-        ids.add(String.valueOf(Place.TYPE_BAKERY));
-
-        PlaceFilter filter = new PlaceFilter(false, ids);
         Context context = getApplicationContext();
         try {
             startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
@@ -165,23 +161,30 @@ public class MainActivity extends BaseActivity {
         mSubscriptions.add(mDataManager.getLocations()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
-                .subscribe(new Subscriber<Location>() {
+                .subscribe(new Subscriber<List<Location>>() {
                     @Override
                     public void onCompleted() {
-
+                        mProgressBar.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onError(Throwable error) {
-                        Timber.e("There was an error retrieving the characters " + error);
+                        Timber.e("There was an error retrieving the locations " + error);
                         mProgressBar.setVisibility(View.GONE);
                         DialogFactory.createSimpleErrorDialog(MainActivity.this).show();
                     }
 
                     @Override
-                    public void onNext(Location location) {
-                        mProgressBar.setVisibility(View.GONE);
-                        mEasyRecycleAdapter.addItem(location);
+                    public void onNext(List<Location> locations) {
+                        Timber.e("SIZE : " + locations.size());
+                        if (locations.size() > 0) {
+                            mEasyRecycleAdapter.setItems(locations);
+                        } else {
+                            mCharactersRecycler.setVisibility(View.GONE);
+                            mNoPlacesText.setVisibility(View.VISIBLE);
+
+                        }
+
                     }
                 }));
     }

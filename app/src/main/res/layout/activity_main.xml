@@ -35,6 +35,13 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
+        <TextView
+            android:id="@+id/text_no_places"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No places to display"
+            android:visibility="gone"/>
+
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:id="@+id/progress_indicator"

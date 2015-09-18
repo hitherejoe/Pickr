@@ -75,13 +75,13 @@ public class DataManager {
         return mSubscribeScheduler;
     }
 
-    public Observable<Location> getLocations() {
+    public Observable<List<Location>> getLocations() {
         return mDatabaseHelper.getLocations().flatMapIterable(new Func1<List<Location>, Iterable<? extends Location>>() {
             @Override
             public Iterable<? extends Location> call(List<Location> locations) {
                 return locations;
             }
-        });
+        }).toList();
     }
 
     public Observable<Location> saveLocation(Location location) {

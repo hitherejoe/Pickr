@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,20 +41,20 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import uk.co.ribot.easyadapter.EasyRecyclerAdapter;
 
-public class SearchActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, SearchView.OnQueryTextListener {
-
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
-
-    @Bind(R.id.recycler_places)
-    RecyclerView mPlacesRecycler;
+public class SearchActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     @Bind(R.id.layout_search)
     CoordinatorLayout mLayoutSearch;
 
-    private EasyRecyclerAdapter<Place> mEasyRecycleAdapter;
+    @Bind(R.id.recycler_places)
+    RecyclerView mPlacesRecycler;
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     private CompositeSubscription mSubscriptions;
     private DataManager mDataManager;
+    private EasyRecyclerAdapter<Place> mEasyRecycleAdapter;
     private ReactiveLocationProvider mLocationProvider;
     private android.location.Location mCurrentKnownLocation;
     private ProgressDialog mProgressDialog;
@@ -64,22 +63,54 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+        ButterKnife.bind(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0 /* clientId */, this)
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-        setContentView(R.layout.activity_search);
-        ButterKnife.bind(this);
         mDataManager = AndroidBoilerplateApplication.get(this).getComponent().dataManager();
         mSubscriptions = new CompositeSubscription();
         mLocationProvider = new ReactiveLocationProvider(this);
         mProgressDialog = DialogFactory.createProgressDialog(this, R.string.text_getting_location);
 
+        retrieveDeviceCurrentLocation();
         setupToolbar();
         setupRecyclerView();
-        retrieveDeviceCurrentLocation();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search, menu);
+        setupSearchView(menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Timber.e("Connection error..." + result.getErrorCode() + " : " + result.getErrorCode());
+        DialogFactory.createSimpleOkErrorDialog(
+                this,
+                "Error",
+                "Could not connect to Google API Client: Error " + result.getErrorCode()
+        ).show();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.label_search));
+        }
+    }
+
+    private void setupRecyclerView() {
+        mPlacesRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mEasyRecycleAdapter = new EasyRecyclerAdapter<>(this, SearchHolder.class, mLocationListener);
+        mPlacesRecycler.setAdapter(mEasyRecycleAdapter);
     }
 
     private void retrieveDeviceCurrentLocation() {
@@ -113,34 +144,24 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                         }));
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Search");
-        }
-    }
-
-    private void setupRecyclerView() {
-        mPlacesRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mEasyRecycleAdapter = new EasyRecyclerAdapter<>(this, SearchHolder.class, mLocationListener);
-        mPlacesRecycler.setAdapter(mEasyRecycleAdapter);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search, menu);
-        setupSearchView(menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
     private void setupSearchView(Menu menu) {
         ActionBar actionBar = getSupportActionBar();
         Context context = actionBar != null ? actionBar.getThemedContext() : this;
-        final SearchView searchView = new SearchView(context);
+        SearchView searchView = new SearchView(context);
         searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(this);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String queryText) {
+                mEasyRecycleAdapter.setItems(new ArrayList<Place>());
+                if (queryText.length() > 0) getAutocompleteResults(queryText);
+                return false;
+            }
+        });
         menu.findItem(R.id.action_search).setActionView(searchView);
     }
 
@@ -164,7 +185,11 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                         if (location == null) {
                             savePlace(place);
                         } else {
-                            DialogFactory.createSimpleOkErrorDialog(SearchActivity.this, "Error", "This place is already saved!").show();
+                            DialogFactory.createSimpleOkErrorDialog(
+                                    SearchActivity.this,
+                                    "Error",
+                                    "This place is already saved!"
+                            ).show();
                         }
                     }
                 }));
@@ -180,7 +205,11 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .subscribe(new Subscriber<Location>() {
                     @Override
                     public void onCompleted() {
-                        SnackbarFactory.createSnackbar(SearchActivity.this, mLayoutSearch, getString(R.string.text_place_saved)).show();
+                        SnackbarFactory.createSnackbar(
+                                SearchActivity.this,
+                                mLayoutSearch,
+                                getString(R.string.text_place_saved)
+                        ).show();
                         mProgressDialog.dismiss();
                         finish();
                     }
@@ -197,77 +226,34 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 }));
     }
 
-    /**
-     * Called when the Activity could not connect to Google Play services and the auto manager
-     * could resolve the error automatically.
-     * In this case the API is not available and notify the user.
-     *
-     * @param connectionResult can be inspected to determine the cause of the failure
-     */
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    private void getAutocompleteResults(String queryText) {
+        LatLng latLng = new LatLng(
+                mCurrentKnownLocation.getLatitude(),
+                mCurrentKnownLocation.getLongitude()
+        );
+        LatLngBounds latLngBounds = convertCenterAndRadiusToBounds(latLng, 10);
+        mSubscriptions.add(mDataManager.getPlaces(mGoogleApiClient, queryText, latLngBounds)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(mDataManager.getScheduler())
+                .subscribe(new Subscriber<Place>() {
+                    @Override
+                    public void onCompleted() {
 
-        //    Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
-        //          + connectionResult.getErrorCode());
+                    }
 
-        // TODO(Developer): Check error code and notify the user of error state and resolution.
-        Toast.makeText(this,
-                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
-                Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e("There was an error saving the selected place... " + e);
+                    }
+
+                    @Override
+                    public void onNext(Place autocompletePrediction) {
+                        mEasyRecycleAdapter.addItem(autocompletePrediction);
+                    }
+                }));
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        mEasyRecycleAdapter.setItems(new ArrayList<Place>());
-
-        if (newText.length() > 0) {
-            LatLng latLng = new LatLng(mCurrentKnownLocation.getLatitude(), mCurrentKnownLocation.getLongitude());
-            mSubscriptions.add(mDataManager.getPlaces(mGoogleApiClient, newText, convertCenterAndRadiusToBounds(latLng, 10))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(mDataManager.getScheduler())
-                    .subscribe(new Subscriber<Place>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e("There was an error saving the place... " + e);
-                        }
-
-                        @Override
-                        public void onNext(Place autocompletePrediction) {
-                            mEasyRecycleAdapter.addItem(autocompletePrediction);
-                        }
-                    }));
-        }
-
-        return false;
-    }
-
-    public static class PlaceAutocomplete {
-
-        public CharSequence placeId;
-        public CharSequence description;
-
-        public PlaceAutocomplete(CharSequence placeId, CharSequence description) {
-            this.placeId = placeId;
-            this.description = description;
-        }
-
-        @Override
-        public String toString() {
-            return description.toString();
-        }
-    }
-
-    public LatLngBounds convertCenterAndRadiusToBounds(LatLng center, double radius) {
+    private LatLngBounds convertCenterAndRadiusToBounds(LatLng center, double radius) {
         LatLng southwest = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 225);
         LatLng northeast = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 45);
         return new LatLngBounds(southwest, northeast);

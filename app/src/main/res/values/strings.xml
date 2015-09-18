@@ -3,6 +3,7 @@
 
     <!-- Activity labels -->
     <string name="label_main">Pickr</string>
+    <string name="label_search">Search</string>
 
     <!-- Main Activity -->
 
@@ -11,6 +12,7 @@
     <string name="text_collections">Collections</string>
     <string name="text_no_description">No description available</string>
     <string name="text_films_description">%d films</string>
+    <string name="action_open_search">Search</string>
 
     <!-- Detail Fragment -->
 
