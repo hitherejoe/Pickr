@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hitherejoe.androidboilerplate" >
+    package="com.hitherejoe.pickr" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".AndroidBoilerplateApplication"
@@ -22,22 +23,20 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.hitherejoe.androidboilerplate.data.SyncService"/>
+        <meta-data android:name="com.google.android.gms.version"
+                   android:value="@integer/google_play_services_version" />
 
-        <receiver
-            android:name="com.hitherejoe.androidboilerplate.data.SyncService$SyncOnConnectionAvailable"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDfgyWRZgVgg3ZfyP6UH8NYubhRg4i2fG4" />
 
         <activity
             android:name=".ui.activity.DetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity
-            android:name=".ui.activity.CharacterActivity"
+            android:name=".ui.activity.SearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>

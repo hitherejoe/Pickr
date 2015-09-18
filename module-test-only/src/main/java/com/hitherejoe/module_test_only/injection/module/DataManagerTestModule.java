@@ -2,10 +2,10 @@ package com.hitherejoe.module_test_only.injection.module;
 
 import android.content.Context;
 
-import com.hitherejoe.androidboilerplate.data.local.DatabaseHelper;
-import com.hitherejoe.androidboilerplate.data.local.PreferencesHelper;
-import com.hitherejoe.androidboilerplate.data.remote.AndroidBoilerplateService;
-import com.hitherejoe.androidboilerplate.injection.scope.PerDataManager;
+import com.hitherejoe.pickr.data.local.DatabaseHelper;
+import com.hitherejoe.pickr.data.local.PreferencesHelper;
+import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
+import com.hitherejoe.pickr.injection.scope.PerDataManager;
 
 import dagger.Module;
 import dagger.Provides;

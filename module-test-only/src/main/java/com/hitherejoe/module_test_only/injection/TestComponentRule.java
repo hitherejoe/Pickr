@@ -3,10 +3,9 @@ package com.hitherejoe.module_test_only.injection;
 
 import android.support.test.InstrumentationRegistry;
 
-import com.hitherejoe.androidboilerplate.AndroidBoilerplateApplication;
-import com.hitherejoe.androidboilerplate.data.local.DatabaseHelper;
-import com.hitherejoe.androidboilerplate.data.local.PreferencesHelper;
-import com.hitherejoe.androidboilerplate.data.remote.AndroidBoilerplateService;
+import com.hitherejoe.pickr.AndroidBoilerplateApplication;
+import com.hitherejoe.pickr.data.local.DatabaseHelper;
+import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
 import com.hitherejoe.module_test_only.injection.component.DaggerTestComponent;
 import com.hitherejoe.module_test_only.injection.component.TestComponent;
 import com.hitherejoe.module_test_only.injection.module.ApplicationTestModule;

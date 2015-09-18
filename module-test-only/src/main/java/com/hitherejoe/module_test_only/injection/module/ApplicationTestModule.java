@@ -2,7 +2,7 @@ package com.hitherejoe.module_test_only.injection.module;
 
 import android.app.Application;
 
-import com.hitherejoe.androidboilerplate.data.DataManager;
+import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.module_test_only.util.TestDataManager;
 import com.squareup.otto.Bus;
 

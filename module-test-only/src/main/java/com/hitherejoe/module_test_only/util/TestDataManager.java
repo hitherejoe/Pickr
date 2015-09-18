@@ -2,10 +2,10 @@ package com.hitherejoe.module_test_only.util;
 
 import android.content.Context;
 
-import com.hitherejoe.androidboilerplate.AndroidBoilerplateApplication;
-import com.hitherejoe.androidboilerplate.data.DataManager;
-import com.hitherejoe.androidboilerplate.data.local.DatabaseHelper;
-import com.hitherejoe.androidboilerplate.data.remote.AndroidBoilerplateService;
+import com.hitherejoe.pickr.AndroidBoilerplateApplication;
+import com.hitherejoe.pickr.data.DataManager;
+import com.hitherejoe.pickr.data.local.DatabaseHelper;
+import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
 import com.hitherejoe.module_test_only.injection.component.DaggerDataManagerTestComponent;
 import com.hitherejoe.module_test_only.injection.component.TestComponent;
 import com.hitherejoe.module_test_only.injection.module.DataManagerTestModule;

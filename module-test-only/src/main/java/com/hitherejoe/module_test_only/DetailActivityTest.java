@@ -7,10 +7,9 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.hitherejoe.androidboilerplate.R;
-import com.hitherejoe.androidboilerplate.data.model.Character;
-import com.hitherejoe.androidboilerplate.ui.activity.DetailActivity;
-import com.hitherejoe.androidboilerplate.util.MockModelsUtil;
+import com.hitherejoe.pickr.R;
+import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.util.MockModelsUtil;
 import com.hitherejoe.module_test_only.injection.TestComponentRule;
 
 import org.junit.Before;
@@ -46,15 +45,15 @@ public class DetailActivityTest {
 
     @Test
     public void testCharacterCollectionsDisplayed() {
-        Character mockCharacter = MockModelsUtil.createMockCharacter();
-        Intent i = DetailActivity.getStartIntent(mContext, mockCharacter);
+        Location mockLocation = MockModelsUtil.createMockCharacter();
+        Intent i = DetailActivity.getStartIntent(mContext, mockLocation);
         main.launchActivity(i);
         String[] tabTitles =
-                InstrumentationRegistry.getTargetContext().getResources().getStringArray(com.hitherejoe.androidboilerplate.R.array.detail_fragment_titles);
-        checkTextIsShownInTab(tabTitles[0], mockCharacter.films);
-        checkTextIsShownInTab(tabTitles[1], mockCharacter.vehicles);
-        checkTextIsShownInTab(tabTitles[2], mockCharacter.species);
-        checkTextIsShownInTab(tabTitles[3], mockCharacter.starships);
+                InstrumentationRegistry.getTargetContext().getResources().getStringArray(com.hitherejoe.pickr.R.array.detail_fragment_titles);
+        checkTextIsShownInTab(tabTitles[0], mockLocation.films);
+        checkTextIsShownInTab(tabTitles[1], mockLocation.vehicles);
+        checkTextIsShownInTab(tabTitles[2], mockLocation.species);
+        checkTextIsShownInTab(tabTitles[3], mockLocation.starships);
     }
 
     private void checkTextIsShownInTab(String tab, List<String> items) {
