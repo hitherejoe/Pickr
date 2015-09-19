@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -41,142 +42,150 @@
                 android:layout_height="240dp" />
 
             <LinearLayout
-                android:id="@+id/layout_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <TextView
-                    style="@style/TitleTextStyle"
-                    android:id="@+id/text_name_title"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/text_title_name"/>
+                <LinearLayout
+                    android:id="@+id/layout_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        style="@style/TitleTextStyle"
+                        android:id="@+id/text_name_title"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/text_title_name"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/text_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/layout_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                </LinearLayout>
 
-                <TextView
-                    style="@style/TitleTextStyle"
-                    android:id="@+id/text_address_title"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/text_title_address"/>
+                <LinearLayout
+                    android:id="@+id/layout_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        style="@style/TitleTextStyle"
+                        android:id="@+id/text_address_title"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/text_title_address"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/text_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/layout_phone_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                </LinearLayout>
 
-                <TextView
-                    style="@style/TitleTextStyle"
-                    android:id="@+id/text_phone_number_title"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/text_title_phone_number"/>
+                <LinearLayout
+                    android:id="@+id/layout_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_phone_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        style="@style/TitleTextStyle"
+                        android:id="@+id/text_phone_number_title"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/text_title_phone_number"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/text_phone_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/layout_website"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                </LinearLayout>
 
-                <TextView
-                    style="@style/TitleTextStyle"
-                    android:id="@+id/text_website_title"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/text_title_website"/>
+                <LinearLayout
+                    android:id="@+id/layout_website"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_website"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        style="@style/TitleTextStyle"
+                        android:id="@+id/text_website_title"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/text_title_website"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/text_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/layout_locale"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                </LinearLayout>
 
-                <TextView
-                    style="@style/TitleTextStyle"
-                    android:id="@+id/text_locale_title"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/text_title_locale"/>
+                <LinearLayout
+                    android:id="@+id/layout_locale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_locale"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        style="@style/TitleTextStyle"
+                        android:id="@+id/text_locale_title"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/text_title_locale"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/text_locale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/layout_rating"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                </LinearLayout>
 
-                <TextView
-                    style="@style/TitleTextStyle"
-                    android:id="@+id/text_rating_title"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/text_title_rating"/>
+                <LinearLayout
+                    android:id="@+id/layout_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        style="@style/TitleTextStyle"
+                        android:id="@+id/text_rating_title"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/text_title_rating"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/text_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/layout_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                </LinearLayout>
 
-                <TextView
-                    style="@style/TitleTextStyle"
-                    android:id="@+id/text_price_title"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/text_title_price_level"/>
+                <LinearLayout
+                    android:id="@+id/layout_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        style="@style/TitleTextStyle"
+                        android:id="@+id/text_price_title"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/text_title_price_level"/>
+
+                    <TextView
+                        android:id="@+id/text_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 

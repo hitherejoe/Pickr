@@ -57,8 +57,7 @@ public class Location implements Parcelable {
         dest.writeSerializable(this.locale);
     }
 
-    public Location() {
-    }
+    public Location() { }
 
     protected Location(Parcel in) {
         this.id = in.readString();

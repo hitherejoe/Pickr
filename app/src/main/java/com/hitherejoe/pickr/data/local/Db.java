@@ -53,7 +53,7 @@ public class Db {
             values.put(COLUMN_PRICE, location.priceLevel);
             values.put(COLUMN_RATING, location.rating);
             values.put(COLUMN_LAT_LNG_BOUNDS, gson.toJson(location.latLngBounds));
-            values.put(COLUMN_WEBSITE, location.websiteUri.toString());
+            values.put(COLUMN_WEBSITE, gson.toJson(location.websiteUri));
             values.put(COLUMN_LOCALE, gson.toJson(location.locale));
             return values;
         }
@@ -68,7 +68,7 @@ public class Db {
             location.priceLevel = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PRICE));
             location.rating = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_RATING));
             location.latLngBounds = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAT_LNG_BOUNDS)), LatLngBounds.class);
-            location.websiteUri = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_WEBSITE)));
+            if (location.websiteUri != null) location.websiteUri = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_WEBSITE)));
             location.locale = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCALE)), Locale.class);
             return location;
         }

@@ -2,7 +2,6 @@ package com.hitherejoe.pickr.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +19,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.model.Location;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Locale;
 
 import butterknife.Bind;
@@ -141,9 +142,15 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
             mPhoneNumberLayout.setVisibility(View.GONE);
         }
 
-        Uri placeWebsite = mLocation.websiteUri;
-        if (placeWebsite != null) {
-            mWebsiteText.setText(placeWebsite.toString());
+        if (mLocation.websiteUri != null) {
+            try {
+                java.net.URI uri = new java.net.URI(mLocation.websiteUri.toString());
+                mWebsiteText.setText(uri.toURL().toString());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         } else {
             mWebsiteLayout.setVisibility(View.GONE);
         }
@@ -156,14 +163,14 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
         }
 
         float placeRating = mLocation.rating;
-        if (placeRating != 0) {
+        if (placeRating > 0) {
             mRatingText.setText(String.valueOf(placeRating));
         } else {
             mRatingLayout.setVisibility(View.GONE);
         }
 
         float placePrice = mLocation.priceLevel;
-        if (placePrice != 0) {
+        if (placePrice > 0) {
             mPriceText.setText(String.valueOf(placePrice));
         } else {
             mPriceLayout.setVisibility(View.GONE);

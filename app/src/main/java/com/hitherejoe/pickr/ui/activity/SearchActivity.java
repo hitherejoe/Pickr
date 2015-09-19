@@ -114,6 +114,28 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
         mPlacesRecycler.setAdapter(mEasyRecycleAdapter);
     }
 
+    private void setupSearchView(Menu menu) {
+        ActionBar actionBar = getSupportActionBar();
+        Context context = actionBar != null ? actionBar.getThemedContext() : this;
+        SearchView searchView = new SearchView(context);
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String queryText) {
+                mEasyRecycleAdapter.setItems(new ArrayList<Place>());
+                if (queryText.length() > 0) getAutocompleteResults(queryText);
+                return false;
+            }
+        });
+        searchView.requestFocus();
+        menu.findItem(R.id.action_search).setActionView(searchView);
+    }
+
     private void retrieveDeviceCurrentLocation() {
         LocationRequest request = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
@@ -143,27 +165,6 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                                 mProgressDialog.dismiss();
                             }
                         }));
-    }
-
-    private void setupSearchView(Menu menu) {
-        ActionBar actionBar = getSupportActionBar();
-        Context context = actionBar != null ? actionBar.getThemedContext() : this;
-        SearchView searchView = new SearchView(context);
-        searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String queryText) {
-                mEasyRecycleAdapter.setItems(new ArrayList<Place>());
-                if (queryText.length() > 0) getAutocompleteResults(queryText);
-                return false;
-            }
-        });
-        menu.findItem(R.id.action_search).setActionView(searchView);
     }
 
     private void checkPlace(final Place place) {
