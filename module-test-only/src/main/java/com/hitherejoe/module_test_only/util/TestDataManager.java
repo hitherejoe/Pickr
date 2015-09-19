@@ -2,7 +2,7 @@ package com.hitherejoe.module_test_only.util;
 
 import android.content.Context;
 
-import com.hitherejoe.pickr.AndroidBoilerplateApplication;
+import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
 import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
@@ -26,7 +26,7 @@ public class TestDataManager extends DataManager {
     @Override
     protected void injectDependencies(Context context) {
         TestComponent testComponent = (TestComponent)
-                AndroidBoilerplateApplication.get(context).getComponent();
+                PickrApplication.get(context).getComponent();
         DaggerDataManagerTestComponent.builder()
                 .testComponent(testComponent)
                 .dataManagerTestModule(new DataManagerTestModule(context))

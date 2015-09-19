@@ -4,7 +4,7 @@ import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.hitherejoe.pickr.AndroidBoilerplateApplication;
+import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.injection.component.ApplicationComponent;
 
 public class BaseActivity extends AppCompatActivity {
@@ -26,7 +26,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected ApplicationComponent applicationComponent() {
-        return AndroidBoilerplateApplication.get(this).getComponent();
+        return PickrApplication.get(this).getComponent();
     }
 
 }

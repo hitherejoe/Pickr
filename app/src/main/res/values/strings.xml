@@ -14,6 +14,8 @@
     <string name="text_films_description">%d films</string>
     <string name="action_open_search">Search</string>
 
+    <string name="text_no_places">No places to display</string>
+
     <!-- Detail Fragment -->
 
     <string-array name="detail_fragment_titles">

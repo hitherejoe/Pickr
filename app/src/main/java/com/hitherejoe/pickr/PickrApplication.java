@@ -9,7 +9,7 @@ import com.hitherejoe.pickr.injection.module.ApplicationModule;
 
 import timber.log.Timber;
 
-public class AndroidBoilerplateApplication extends Application {
+public class PickrApplication extends Application {
 
     ApplicationComponent mApplicationComponent;
 
@@ -23,8 +23,8 @@ public class AndroidBoilerplateApplication extends Application {
                 .build();
     }
 
-    public static AndroidBoilerplateApplication get(Context context) {
-        return (AndroidBoilerplateApplication) context.getApplicationContext();
+    public static PickrApplication get(Context context) {
+        return (PickrApplication) context.getApplicationContext();
     }
 
     public ApplicationComponent getComponent() {

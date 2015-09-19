@@ -3,7 +3,6 @@ package com.hitherejoe.module_test_only.injection.module;
 import android.content.Context;
 
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
-import com.hitherejoe.pickr.data.local.PreferencesHelper;
 import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
 import com.hitherejoe.pickr.injection.scope.PerDataManager;
 

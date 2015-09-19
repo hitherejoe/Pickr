@@ -8,20 +8,17 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceFilter;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.hitherejoe.pickr.AndroidBoilerplateApplication;
+import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.model.Location;
@@ -29,7 +26,6 @@ import com.hitherejoe.pickr.ui.adapter.LocationHolder;
 import com.hitherejoe.pickr.util.DialogFactory;
 import com.hitherejoe.pickr.util.SnackbarFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -46,22 +42,22 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.layout_main)
     CoordinatorLayout mLayoutRoot;
 
-    @Bind(R.id.recycler_characters)
-    RecyclerView mCharactersRecycler;
-
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
-
     @Bind(R.id.progress_indicator)
     ProgressBar mProgressBar;
+
+    @Bind(R.id.recycler_characters)
+    RecyclerView mCharactersRecycler;
 
     @Bind(R.id.text_no_places)
     TextView mNoPlacesText;
 
-    int PLACE_PICKER_REQUEST = 1020;
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
 
+    private static final int PLACE_PICKER_REQUEST = 1020;
+
+    private CompositeSubscription mCompositeSubscription;
     private DataManager mDataManager;
-    private CompositeSubscription mSubscriptions;
     private EasyRecyclerAdapter<Location> mEasyRecycleAdapter;
 
     @Override
@@ -70,8 +66,9 @@ public class MainActivity extends BaseActivity {
         applicationComponent().inject(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mSubscriptions = new CompositeSubscription();
-        mDataManager = AndroidBoilerplateApplication.get(this).getComponent().dataManager();
+        mCompositeSubscription = new CompositeSubscription();
+        mDataManager = PickrApplication.get(this).getComponent().dataManager();
+
         setupToolbar();
         setupRecyclerView();
         loadLocations();
@@ -80,10 +77,8 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-                savePlace(place);
+                Place selectedPlace = PlacePicker.getPlace(data, this);
+                savePlace(selectedPlace);
             }
         }
     }
@@ -91,7 +86,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSubscriptions.unsubscribe();
+        mCompositeSubscription.unsubscribe();
     }
 
     @Override
@@ -136,7 +131,7 @@ public class MainActivity extends BaseActivity {
 
     private void savePlace(Place place) {
         Location location = Location.fromPlace(place);
-        mSubscriptions.add(mDataManager.saveLocation(location)
+        mCompositeSubscription.add(mDataManager.saveLocation(location)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
                 .subscribe(new Subscriber<Location>() {
@@ -158,13 +153,14 @@ public class MainActivity extends BaseActivity {
     }
 
     private void loadLocations() {
-        mSubscriptions.add(mDataManager.getLocations()
+        Timber.e("CALLED");
+        mCompositeSubscription.add(mDataManager.getLocations()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
                 .subscribe(new Subscriber<List<Location>>() {
                     @Override
                     public void onCompleted() {
-                        mProgressBar.setVisibility(View.GONE);
+
                     }
 
                     @Override
@@ -176,13 +172,13 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onNext(List<Location> locations) {
-                        Timber.e("SIZE : " + locations.size());
+                        mProgressBar.setVisibility(View.GONE);
                         if (locations.size() > 0) {
                             mEasyRecycleAdapter.setItems(locations);
+                            mEasyRecycleAdapter.notifyDataSetChanged();
                         } else {
                             mCharactersRecycler.setVisibility(View.GONE);
                             mNoPlacesText.setVisibility(View.VISIBLE);
-
                         }
 
                     }
@@ -200,13 +196,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void deleteLocation(Location location) {
-        mSubscriptions.add(mDataManager.deleteLocation(location)
+        mCompositeSubscription.add(mDataManager.deleteLocation(location)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
                 .subscribe(new Subscriber<Location>() {
                     @Override
                     public void onCompleted() {
-                        mEasyRecycleAdapter.notifyDataSetChanged();
                         SnackbarFactory.createSnackbar(
                                 MainActivity.this, mLayoutRoot, "Location deleted").show();
                     }
@@ -218,7 +213,7 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onNext(Location location) {
-
+                        mEasyRecycleAdapter.removeItem(location);
                     }
                 }));
     }

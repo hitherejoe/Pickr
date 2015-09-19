@@ -3,7 +3,7 @@ package com.hitherejoe.module_test_only.injection;
 
 import android.support.test.InstrumentationRegistry;
 
-import com.hitherejoe.pickr.AndroidBoilerplateApplication;
+import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
 import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
 import com.hitherejoe.module_test_only.injection.component.DaggerTestComponent;
@@ -40,7 +40,7 @@ public class TestComponentRule implements TestRule {
     }
 
     private void setupDaggerTestComponentInApplication() {
-        AndroidBoilerplateApplication application = AndroidBoilerplateApplication
+        PickrApplication application = PickrApplication
                 .get(InstrumentationRegistry.getTargetContext());
         if (application.getComponent() instanceof TestComponent) {
             mTestComponent = (TestComponent) application.getComponent();

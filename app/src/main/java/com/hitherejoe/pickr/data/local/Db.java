@@ -4,11 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hitherejoe.pickr.data.model.Location;
 import com.hitherejoe.pickr.util.DataUtils;
-
-import java.util.List;
 
 public class Db {
 

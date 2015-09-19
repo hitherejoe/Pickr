@@ -3,7 +3,6 @@ package com.hitherejoe.pickr.data.local;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.google.android.gms.location.places.Place;
 import com.hitherejoe.pickr.data.model.Location;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;

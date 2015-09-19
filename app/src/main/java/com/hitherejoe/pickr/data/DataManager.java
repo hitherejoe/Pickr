@@ -1,7 +1,6 @@
 package com.hitherejoe.pickr.data;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -13,18 +12,14 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.hitherejoe.pickr.AndroidBoilerplateApplication;
+import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
-import com.hitherejoe.pickr.data.local.PreferencesHelper;
 import com.hitherejoe.pickr.data.model.Location;
-import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
+import com.hitherejoe.pickr.data.model.PlaceAutocomplete;
 import com.hitherejoe.pickr.injection.component.DaggerDataManagerComponent;
 import com.hitherejoe.pickr.injection.module.DataManagerModule;
-import com.hitherejoe.pickr.ui.activity.SearchActivity;
 import com.squareup.otto.Bus;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -37,9 +32,7 @@ import rx.functions.Func1;
 
 public class DataManager {
 
-    @Inject protected AndroidBoilerplateService mAndroidBoilerplateService;
     @Inject protected DatabaseHelper mDatabaseHelper;
-    @Inject protected PreferencesHelper mPreferencesHelper;
     @Inject protected Scheduler mSubscribeScheduler;
     @Inject protected Bus mEventBus;
 
@@ -51,21 +44,17 @@ public class DataManager {
      * At the moment this is not possible to do with Dagger because the Gradle APT plugin doesn't
      * work for the unit test variant, plus Dagger 2 doesn't provide a nice way of overriding
      * modules */
-    public DataManager(AndroidBoilerplateService watchTowerService,
-                       DatabaseHelper databaseHelper,
+    public DataManager(DatabaseHelper databaseHelper,
                        Bus eventBus,
-                       PreferencesHelper preferencesHelper,
                        Scheduler subscribeScheduler) {
-        mAndroidBoilerplateService = watchTowerService;
         mDatabaseHelper = databaseHelper;
         mEventBus = eventBus;
-        mPreferencesHelper = preferencesHelper;
         mSubscribeScheduler = subscribeScheduler;
     }
 
     protected void injectDependencies(Context context) {
         DaggerDataManagerComponent.builder()
-                .applicationComponent(AndroidBoilerplateApplication.get(context).getComponent())
+                .applicationComponent(PickrApplication.get(context).getComponent())
                 .dataManagerModule(new DataManagerModule(context))
                 .build()
                 .inject(this);
@@ -76,12 +65,7 @@ public class DataManager {
     }
 
     public Observable<List<Location>> getLocations() {
-        return mDatabaseHelper.getLocations().flatMapIterable(new Func1<List<Location>, Iterable<? extends Location>>() {
-            @Override
-            public Iterable<? extends Location> call(List<Location> locations) {
-                return locations;
-            }
-        }).toList();
+        return mDatabaseHelper.getLocations();
     }
 
     public Observable<Location> saveLocation(Location location) {
@@ -92,10 +76,10 @@ public class DataManager {
         return mDatabaseHelper.deleteLocation(location);
     }
 
-    public Observable<SearchActivity.PlaceAutocomplete> getAutocompleteResults(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
-        return Observable.create(new Observable.OnSubscribe<SearchActivity.PlaceAutocomplete>() {
+    public Observable<PlaceAutocomplete> getAutocompleteResults(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
+        return Observable.create(new Observable.OnSubscribe<PlaceAutocomplete>() {
             @Override
-            public void call(Subscriber<? super SearchActivity.PlaceAutocomplete> subscriber) {
+            public void call(Subscriber<? super PlaceAutocomplete> subscriber) {
                 PendingResult<AutocompletePredictionBuffer> results =
                         Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, query,
                                 bounds, null);
@@ -111,7 +95,7 @@ public class DataManager {
                     // Copy the results into our own data structure, because we can't hold onto the buffer.
                     // AutocompletePrediction objects encapsulate the API response (place ID and description).
                     for (AutocompletePrediction autocompletePrediction : autocompletePredictions) {
-                        subscriber.onNext(new SearchActivity.PlaceAutocomplete(autocompletePrediction.getPlaceId(), autocompletePrediction.getDescription()));
+                        subscriber.onNext(new PlaceAutocomplete(autocompletePrediction.getPlaceId(), autocompletePrediction.getDescription()));
                     }
                     // Release the buffer now that all data has been copied.
                     autocompletePredictions.release();
@@ -126,9 +110,9 @@ public class DataManager {
     }
 
     public Observable<Place> getPlaces(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
-        return getAutocompleteResults(mGoogleApiClient, query, bounds).flatMap(new Func1<SearchActivity.PlaceAutocomplete, Observable<Place>>() {
+        return getAutocompleteResults(mGoogleApiClient, query, bounds).flatMap(new Func1<PlaceAutocomplete, Observable<Place>>() {
             @Override
-            public Observable<Place> call(SearchActivity.PlaceAutocomplete placeAutocomplete) {
+            public Observable<Place> call(PlaceAutocomplete placeAutocomplete) {
                 return getPlace(mGoogleApiClient, placeAutocomplete.placeId.toString());
             }
         });

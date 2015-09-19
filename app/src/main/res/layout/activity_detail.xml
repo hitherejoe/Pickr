@@ -21,26 +21,47 @@
             app:layout_scrollFlags="scroll|enterAlways"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/sliding_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primary"
-            app:tabGravity="center"
-            app:tabIndicatorColor="@color/accent"
-            app:tabIndicatorHeight="3dp"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="@color/primary_light"/>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager_character_detail"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/app_bar"
-        android:background="@color/white"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/fragment_map"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="240dp" />
+
+            <LinearLayout
+                android:id="@+id/layout_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextStyle"
+                    android:id="@+id/text_name_title"
+                    android:layout_marginBottom="4dp"
+                    android:text="Name"/>
+
+                <TextView
+                    android:id="@+id/text_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
 import com.hitherejoe.pickr.data.local.Db;
-import com.hitherejoe.pickr.data.local.PreferencesHelper;
 import com.hitherejoe.pickr.data.model.Location;
 import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
 import com.hitherejoe.pickr.util.DefaultConfig;

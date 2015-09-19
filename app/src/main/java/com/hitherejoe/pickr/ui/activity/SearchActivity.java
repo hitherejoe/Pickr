@@ -19,7 +19,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.SphericalUtil;
-import com.hitherejoe.pickr.AndroidBoilerplateApplication;
+import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.model.Location;
@@ -52,13 +52,14 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
+    protected GoogleApiClient mGoogleApiClient;
+
     private CompositeSubscription mSubscriptions;
     private DataManager mDataManager;
     private EasyRecyclerAdapter<Place> mEasyRecycleAdapter;
+    private ProgressDialog mProgressDialog;
     private ReactiveLocationProvider mLocationProvider;
     private android.location.Location mCurrentKnownLocation;
-    private ProgressDialog mProgressDialog;
-    protected GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-        mDataManager = AndroidBoilerplateApplication.get(this).getComponent().dataManager();
+        mDataManager = PickrApplication.get(this).getComponent().dataManager();
         mSubscriptions = new CompositeSubscription();
         mLocationProvider = new ReactiveLocationProvider(this);
         mProgressDialog = DialogFactory.createProgressDialog(this, R.string.text_getting_location);
