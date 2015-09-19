@@ -28,6 +28,14 @@
     <string name="text_no_data">No data to display</string>
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
 
+    <string name="text_title_name">Name</string>
+    <string name="text_title_address">Address</string>
+    <string name="text_title_phone_number">Phone number</string>
+    <string name="text_title_website">Website</string>
+    <string name="text_title_locale">Locale</string>
+    <string name="text_title_rating">Rating</string>
+    <string name="text_title_price_level">Price level</string>
+
     <!-- Dialogs -->
 
     <string name="dialog_action_ok">OK</string>

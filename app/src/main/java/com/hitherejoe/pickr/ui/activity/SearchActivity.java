@@ -232,7 +232,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 mCurrentKnownLocation.getLatitude(),
                 mCurrentKnownLocation.getLongitude()
         );
-        LatLngBounds latLngBounds = convertCenterAndRadiusToBounds(latLng, 10);
+        LatLngBounds latLngBounds = convertCenterAndRadiusToBounds(latLng, 5);
         mSubscriptions.add(mDataManager.getPlaces(mGoogleApiClient, queryText, latLngBounds)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())

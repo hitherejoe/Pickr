@@ -2,8 +2,8 @@ package com.hitherejoe.pickr.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.model.Location;
 
+import java.util.Locale;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -33,6 +35,42 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
 
     @Bind(R.id.layout_name)
     LinearLayout mNameLayout;
+
+    @Bind(R.id.text_address)
+    TextView mAddressText;
+
+    @Bind(R.id.layout_address)
+    LinearLayout mAddressLayout;
+
+    @Bind(R.id.text_phone_number)
+    TextView mPhoneNumberText;
+
+    @Bind(R.id.layout_phone_number)
+    LinearLayout mPhoneNumberLayout;
+
+    @Bind(R.id.text_website)
+    TextView mWebsiteText;
+
+    @Bind(R.id.layout_website)
+    LinearLayout mWebsiteLayout;
+
+    @Bind(R.id.text_locale)
+    TextView mLocaleText;
+
+    @Bind(R.id.layout_locale)
+    LinearLayout mLocaleLayout;
+
+    @Bind(R.id.text_rating)
+    TextView mRatingText;
+
+    @Bind(R.id.layout_rating)
+    LinearLayout mRatingLayout;
+
+    @Bind(R.id.text_price)
+    TextView mPriceText;
+
+    @Bind(R.id.layout_price)
+    LinearLayout mPriceLayout;
 
     private static final String EXTRA_LOCATION =
             "com.hitherejoe.pickr.ui.activity.DetailActivity.EXTRA_LOCATION";
@@ -53,8 +91,8 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
         if (mLocation == null) {
             throw new IllegalArgumentException("DetailActivity requires a Location object!");
         }
-        setupToolbar();
         ((MapFragment) getFragmentManager().findFragmentById(R.id.fragment_map)).getMapAsync(this);
+        setupToolbar();
         setupLocationData();
     }
 
@@ -81,12 +119,56 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
     }
 
     private void setupLocationData() {
+
         String placeName = mLocation.name;
         if (placeName != null && !placeName.isEmpty()) {
             mNameText.setText(mLocation.name);
         } else {
             mNameLayout.setVisibility(View.GONE);
         }
+
+        String placeAddress = mLocation.address;
+        if (placeAddress != null && !placeAddress.isEmpty()) {
+            mAddressText.setText(placeAddress);
+        } else {
+            mAddressLayout.setVisibility(View.GONE);
+        }
+
+        String placePhoneNumber = mLocation.phoneNumber;
+        if (placePhoneNumber != null && !placePhoneNumber.isEmpty()) {
+            mPhoneNumberText.setText(placePhoneNumber);
+        } else {
+            mPhoneNumberLayout.setVisibility(View.GONE);
+        }
+
+        Uri placeWebsite = mLocation.websiteUri;
+        if (placeWebsite != null) {
+            mWebsiteText.setText(placeWebsite.toString());
+        } else {
+            mWebsiteLayout.setVisibility(View.GONE);
+        }
+
+        Locale placeLocale = mLocation.locale;
+        if (placeLocale != null) {
+            mLocaleText.setText(placeLocale.getDisplayName());
+        } else {
+            mLocaleLayout.setVisibility(View.GONE);
+        }
+
+        float placeRating = mLocation.rating;
+        if (placeRating != 0) {
+            mRatingText.setText(String.valueOf(placeRating));
+        } else {
+            mRatingLayout.setVisibility(View.GONE);
+        }
+
+        float placePrice = mLocation.priceLevel;
+        if (placePrice != 0) {
+            mPriceText.setText(String.valueOf(placePrice));
+        } else {
+            mPriceLayout.setVisibility(View.GONE);
+        }
+
     }
 
 }
