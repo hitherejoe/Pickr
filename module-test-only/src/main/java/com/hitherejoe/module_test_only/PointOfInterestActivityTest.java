@@ -41,12 +41,10 @@ public class PointOfInterestActivityTest {
 
     @Test
     public void testCharacterTextIsDisplayed() {
-        PointOfInterest mockPointOfInterest = MockModelsUtil.createMockCharacter();
+        PointOfInterest mockPointOfInterest = MockModelsUtil.createMockPointOfInterest();
         Intent i = DetailActivity.getStartIntent(mContext, mockPointOfInterest);
         main.launchActivity(i);
 
-        onView(withText(com.hitherejoe.pickr.R.string.text_lorem_ipsum))
-                .check(matches(isDisplayed()));
     }
 
 }

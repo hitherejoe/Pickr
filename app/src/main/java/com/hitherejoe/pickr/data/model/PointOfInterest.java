@@ -20,7 +20,7 @@ public class PointOfInterest implements Parcelable, Comparable<PointOfInterest> 
     public int priceLevel;
     public float rating;
     public LatLngBounds latLngBounds;
-    public Uri websiteUri;
+    public String websiteUri;
     public Locale locale;
 
     public static PointOfInterest fromPlace(Place place) {
@@ -33,7 +33,7 @@ public class PointOfInterest implements Parcelable, Comparable<PointOfInterest> 
         pointOfInterest.priceLevel = place.getPriceLevel();
         pointOfInterest.rating = place.getRating();
         pointOfInterest.latLngBounds = place.getViewport();
-        pointOfInterest.websiteUri = place.getWebsiteUri();
+        pointOfInterest.websiteUri = place.getWebsiteUri().toString();
         pointOfInterest.locale = place.getLocale();
         return pointOfInterest;
     }
@@ -53,7 +53,7 @@ public class PointOfInterest implements Parcelable, Comparable<PointOfInterest> 
         dest.writeInt(this.priceLevel);
         dest.writeFloat(this.rating);
         dest.writeParcelable(this.latLngBounds, 0);
-        dest.writeParcelable(this.websiteUri, 0);
+        dest.writeString(this.websiteUri);
         dest.writeSerializable(this.locale);
     }
 
@@ -85,5 +85,43 @@ public class PointOfInterest implements Parcelable, Comparable<PointOfInterest> 
     @Override
     public int compareTo(PointOfInterest pointOfInterest) {
         return name.compareToIgnoreCase(pointOfInterest.name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PointOfInterest that = (PointOfInterest) o;
+
+        if (priceLevel != that.priceLevel) return false;
+        if (Float.compare(that.rating, rating) != 0) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (address != null ? !address.equals(that.address) : that.address != null) return false;
+        if (latLng != null ? !latLng.equals(that.latLng) : that.latLng != null) return false;
+        if (phoneNumber != null ? !phoneNumber.equals(that.phoneNumber) : that.phoneNumber != null)
+            return false;
+        if (latLngBounds != null ? !latLngBounds.equals(that.latLngBounds) : that.latLngBounds != null)
+            return false;
+        if (websiteUri != null ? !websiteUri.equals(that.websiteUri) : that.websiteUri != null)
+            return false;
+        return !(locale != null ? !locale.equals(that.locale) : that.locale != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (latLng != null ? latLng.hashCode() : 0);
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + priceLevel;
+        result = 31 * result + (rating != +0.0f ? Float.floatToIntBits(rating) : 0);
+        result = 31 * result + (latLngBounds != null ? latLngBounds.hashCode() : 0);
+        result = 31 * result + (websiteUri != null ? websiteUri.hashCode() : 0);
+        result = 31 * result + (locale != null ? locale.hashCode() : 0);
+        return result;
     }
 }

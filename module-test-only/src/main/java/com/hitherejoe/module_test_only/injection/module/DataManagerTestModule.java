@@ -3,15 +3,12 @@ package com.hitherejoe.module_test_only.injection.module;
 import android.content.Context;
 
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
-import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
 import com.hitherejoe.pickr.injection.scope.PerDataManager;
 
 import dagger.Module;
 import dagger.Provides;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
-
-import static org.mockito.Mockito.mock;
 
 /**
  * Provides dependencies for an app running on a testing environment
@@ -28,20 +25,8 @@ public class DataManagerTestModule {
 
     @Provides
     @PerDataManager
-    PreferencesHelper providePreferencesHelper() {
-        return new PreferencesHelper(mContext);
-    }
-
-    @Provides
-    @PerDataManager
     DatabaseHelper provideDatabaseHelper() {
         return new DatabaseHelper(mContext);
-    }
-
-    @Provides
-    @PerDataManager
-    AndroidBoilerplateService provideWatchTowerService() {
-        return mock(AndroidBoilerplateService.class);
     }
 
     @Provides

@@ -5,8 +5,6 @@ import android.support.test.InstrumentationRegistry;
 
 import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
-import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
-import com.hitherejoe.module_test_only.injection.component.DaggerTestComponent;
 import com.hitherejoe.module_test_only.injection.component.TestComponent;
 import com.hitherejoe.module_test_only.injection.module.ApplicationTestModule;
 import com.hitherejoe.module_test_only.util.TestDataManager;
@@ -33,10 +31,6 @@ public class TestComponentRule implements TestRule {
 
     public DatabaseHelper getDatabaseHelper() {
         return getDataManager().getDatabaseHelper();
-    }
-
-    public AndroidBoilerplateService getMockWatchTowerService() {
-        return getDataManager().getAndroidBoilerplateService();
     }
 
     private void setupDaggerTestComponentInApplication() {

@@ -26,6 +26,7 @@ import static junit.framework.Assert.assertEquals;
 @Config(constants = BuildConfig.class, sdk = DefaultConfig.EMULATE_SDK, manifest = DefaultConfig.MANIFEST)
 public class DatabaseHelperTest {
 
+    private static final String POI_DUPLICATE_ID = "1234";
     private DatabaseHelper mDatabaseHelper;
 
     @Before
@@ -35,32 +36,95 @@ public class DatabaseHelperTest {
     }
 
     @Test
-    public void shouldSetCharacters() throws Exception {
-        List<PointOfInterest> pointOfInterests = MockModelsUtil.createListOfMockCharacters(5);
-
+    public void shouldSaveLocation() throws Exception {
+        PointOfInterest pointOfInterest = MockModelsUtil.createMockPointOfInterest();
+        pointOfInterest.id = POI_DUPLICATE_ID;
         TestSubscriber<PointOfInterest> result = new TestSubscriber<>();
-        mDatabaseHelper.setCharacters(pointOfInterests).subscribe(result);
+        mDatabaseHelper.saveLocation(pointOfInterest).subscribe(result);
         result.assertNoErrors();
-        result.assertReceivedOnNext(pointOfInterests);
+        result.assertValue(pointOfInterest);
 
         Cursor cursor = mDatabaseHelper.getBriteDb()
-                .query("SELECT * FROM " + Db.CharacterTable.TABLE_NAME);
-        assertEquals(5, cursor.getCount());
-        for (PointOfInterest pointOfInterest : pointOfInterests) {
-            cursor.moveToNext();
-            assertEquals(pointOfInterest, Db.CharacterTable.parseCursor(cursor));
-        }
+                .query("SELECT * FROM " + Db.PointOfInterestTable.TABLE_NAME);
+        assertEquals(1, cursor.getCount());
+        cursor.moveToNext();
+        assertEquals(pointOfInterest, Db.PointOfInterestTable.parseCursor(cursor));
     }
 
     @Test
-    public void shouldGetCharacters() throws Exception {
-        List<PointOfInterest> pointOfInterests = MockModelsUtil.createListOfMockCharacters(5);
+    public void shouldNotSaveDuplicateLocation() throws Exception {
+        PointOfInterest pointOfInterest = MockModelsUtil.createMockPointOfInterest();
+        pointOfInterest.id = POI_DUPLICATE_ID;
+        TestSubscriber<PointOfInterest> result = new TestSubscriber<>();
+        mDatabaseHelper.saveLocation(pointOfInterest).subscribe(result);
+        result.assertNoErrors();
+        result.assertValue(pointOfInterest);
 
-        mDatabaseHelper.setCharacters(pointOfInterests).subscribe();
+        Cursor cursor = mDatabaseHelper.getBriteDb()
+                .query("SELECT * FROM " + Db.PointOfInterestTable.TABLE_NAME);
+        assertEquals(1, cursor.getCount());
+        cursor.moveToNext();
+        assertEquals(pointOfInterest, Db.PointOfInterestTable.parseCursor(cursor));
+
+        TestSubscriber<PointOfInterest> secondResult = new TestSubscriber<>();
+        mDatabaseHelper.saveLocation(pointOfInterest).subscribe(secondResult);
+        result.assertNoErrors();
+        result.assertValue(pointOfInterest);
+
+        Cursor duplicateCursor = mDatabaseHelper.getBriteDb()
+                .query("SELECT * FROM " + Db.PointOfInterestTable.TABLE_NAME);
+        assertEquals(1, duplicateCursor.getCount());
+        duplicateCursor.moveToNext();
+        assertEquals(pointOfInterest, Db.PointOfInterestTable.parseCursor(duplicateCursor));
+    }
+
+    @Test
+    public void shouldGetLocation() throws Exception {
+        PointOfInterest pointOfInterest = MockModelsUtil.createMockPointOfInterest();
+        mDatabaseHelper.saveLocation(pointOfInterest).subscribe();
+
+        TestSubscriber<PointOfInterest> result = new TestSubscriber<>();
+        mDatabaseHelper.getLocation(pointOfInterest.id).subscribe(result);
+        result.assertNoErrors();
+        result.assertValue(pointOfInterest);
+
+        Cursor cursor = mDatabaseHelper.getBriteDb()
+                .query("SELECT * FROM " + Db.PointOfInterestTable.TABLE_NAME);
+        assertEquals(1, cursor.getCount());
+        cursor.moveToNext();
+        assertEquals(pointOfInterest, Db.PointOfInterestTable.parseCursor(cursor));
+    }
+
+    @Test
+    public void shouldGetAllLocations() throws Exception {
+        List<PointOfInterest> pointsOfInterest = MockModelsUtil.createListOfMockCharacters(5);
+        for (PointOfInterest poi : pointsOfInterest) {
+            mDatabaseHelper.saveLocation(poi).subscribe();
+        }
 
         TestSubscriber<List<PointOfInterest>> result = new TestSubscriber<>();
-        mDatabaseHelper.getCharacters().subscribe(result);
+        mDatabaseHelper.getLocations().subscribe(result);
         result.assertNoErrors();
-        result.assertReceivedOnNext(Collections.singletonList(pointOfInterests));
+        result.assertReceivedOnNext(Collections.singletonList(pointsOfInterest));
+    }
+
+    @Test
+    public void shouldDeleteLocation() throws Exception {
+        PointOfInterest pointOfInterest = MockModelsUtil.createMockPointOfInterest();
+        TestSubscriber<PointOfInterest> result = new TestSubscriber<>();
+        mDatabaseHelper.saveLocation(pointOfInterest).subscribe(result);
+        result.assertNoErrors();
+        result.assertValue(pointOfInterest);
+        Cursor saveCursor = mDatabaseHelper.getBriteDb()
+                .query("SELECT * FROM " + Db.PointOfInterestTable.TABLE_NAME);
+        assertEquals(1, saveCursor.getCount());
+        saveCursor.moveToNext();
+        assertEquals(pointOfInterest, Db.PointOfInterestTable.parseCursor(saveCursor));
+
+        mDatabaseHelper.deleteLocation(pointOfInterest).subscribe(result);
+        result.assertNoErrors();
+        Cursor deleteCursor = mDatabaseHelper.getBriteDb()
+                .query("SELECT * FROM " + Db.PointOfInterestTable.TABLE_NAME);
+        assertEquals(0, deleteCursor.getCount());
     }
 }

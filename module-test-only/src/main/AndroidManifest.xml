@@ -2,6 +2,6 @@
               package="com.hitherejoe.androidboilerplate.test">
 
         <instrumentation android:name="android.support.test.runner.AndroidJUnitRunner"
-                         android:targetPackage="com.hitherejoe.androidboilerplate"/>
+                         android:targetPackage="com.hitherejoe.pickr"/>
 
 </manifest>

@@ -28,6 +28,7 @@ import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.ui.adapter.AutocompletePlaceHolder;
+import com.hitherejoe.pickr.util.DataUtils;
 import com.hitherejoe.pickr.util.DialogFactory;
 
 import java.util.ArrayList;
@@ -221,7 +222,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 mCurrentKnownLocation.getLatitude(),
                 mCurrentKnownLocation.getLongitude()
         );
-        LatLngBounds latLngBounds = latitudeLongitudeToBounds(latLng, 5);
+        LatLngBounds latLngBounds = DataUtils.latitudeLongitudeToBounds(latLng, 5);
         mSubscriptions.unsubscribe();
         mSubscriptions.add(mDataManager.getPlaces(mGoogleApiClient, queryText, latLngBounds)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -243,12 +244,6 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                         mEasyRecycleAdapter.addItem(autocompletePrediction);
                     }
                 }));
-    }
-
-    private LatLngBounds latitudeLongitudeToBounds(LatLng center, double radius) {
-        LatLng southwest = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 225);
-        LatLng northeast = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 45);
-        return new LatLngBounds(southwest, northeast);
     }
 
     private AutocompletePlaceHolder.LocationListener mLocationListener = new AutocompletePlaceHolder.LocationListener() {

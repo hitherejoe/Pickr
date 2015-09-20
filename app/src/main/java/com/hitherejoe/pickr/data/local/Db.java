@@ -54,7 +54,7 @@ public class Db {
             values.put(COLUMN_PRICE, pointOfInterest.priceLevel);
             values.put(COLUMN_RATING, pointOfInterest.rating);
             values.put(COLUMN_LAT_LNG_BOUNDS, gson.toJson(pointOfInterest.latLngBounds));
-            values.put(COLUMN_WEBSITE, gson.toJson(pointOfInterest.websiteUri));
+            values.put(COLUMN_WEBSITE, pointOfInterest.websiteUri);
             values.put(COLUMN_LOCALE, gson.toJson(pointOfInterest.locale));
             return values;
         }
@@ -70,7 +70,7 @@ public class Db {
             pointOfInterest.priceLevel = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PRICE));
             pointOfInterest.rating = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_RATING));
             pointOfInterest.latLngBounds = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAT_LNG_BOUNDS)), LatLngBounds.class);
-            if (pointOfInterest.websiteUri != null) pointOfInterest.websiteUri = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_WEBSITE)));
+            pointOfInterest.websiteUri = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_WEBSITE));
             pointOfInterest.locale = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCALE)), Locale.class);
             return pointOfInterest;
         }
