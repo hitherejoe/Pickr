@@ -2,21 +2,16 @@
     <string name="app_name">Pickr</string>
 
     <!-- Activity labels -->
+
     <string name="label_main">Pickr</string>
     <string name="label_search">Search</string>
 
     <!-- Main Activity -->
 
-    <string name="action_github">View on GitHub</string>
-    <string name="text_view">View</string>
-    <string name="text_collections">Collections</string>
-    <string name="text_no_description">No description available</string>
-    <string name="text_films_description">%d films</string>
     <string name="action_open_search">Search</string>
-
     <string name="text_no_places">No places to display</string>
 
-    <!-- Detail Fragment -->
+    <!-- Detail Activity -->
 
     <string-array name="detail_fragment_titles">
         <item>Films</item>
@@ -25,8 +20,6 @@
         <item>Starships</item>
     </string-array>
 
-    <string name="text_no_data">No data to display</string>
-    <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
 
     <string name="text_title_name">Name</string>
     <string name="text_title_address">Address</string>
@@ -42,16 +35,20 @@
     <string name="dialog_action_yes">Yes</string>
     <string name="dialog_action_delete">Delete</string>
     <string name="dialog_action_cancel">Cancel</string>
-
     <string name="dialog_error_title">Oops</string>
+
     <string name="dialog_general_error_Message">There was an error making the request</string>
     <string name="dialog_error_no_connection">Sorry, you need a connection to do that!</string>
-    <string name="text_getting_location">Retreiving location...</string>
-    <string name="text_saving_location">Saving location...</string>
-    <string name="text_place_exists">Oops, that place already exists!</string>
 
+    <string name="dialog_text_getting_location">Retreiving location&#8230;</string>
+    <string name="dialog_text_saving_location">Saving location&#8230;</string>
+    <string name="dialog_text_place_exists">Oops, that place already exists!</string>
+    <string name="dialog_delete_poi_title">Delete POI</string>
+    <string name="dialog_delete_poi_text">Are you sure you want to delete %s?</string>
 
-    <string name="text_place_saved">Place saved</string>
+    <string name="snackbar_poi_deleted">Point of Interest deleted!</string>
+    <string name="snackbar_poi_exists">Point of Interest already exists!</string>
+    <string name="snackbar_poi_saved">Point of Interest saved!</string>
 
     <!-- Error messages -->
 

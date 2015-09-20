@@ -1,7 +1,6 @@
 package com.hitherejoe.pickr.ui.activity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -73,20 +72,13 @@ public class MainActivity extends BaseActivity {
         applicationComponent().inject(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mCompositeSubscription = new CompositeSubscription();
-        mDataManager = PickrApplication.get(this).getComponent().dataManager();
-        PickrApplication.get(this).getComponent().eventBus().register(this);
-        setupToolbar();
-        setupRecyclerView();
-        if (checkPlayServices()) loadLocations();
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place selectedPlace = PlacePicker.getPlace(data, this);
-                savePlace(selectedPlace);
-            }
+        if (checkPlayServices()) {
+            mCompositeSubscription = new CompositeSubscription();
+            mDataManager = PickrApplication.get(this).getComponent().dataManager();
+            PickrApplication.get(this).getComponent().eventBus().register(this);
+            setupToolbar();
+            setupRecyclerView();
+            loadPointsOfInterest();
         }
     }
 
@@ -114,26 +106,34 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place selectedPlace = PlacePicker.getPlace(data, this);
+                savePlace(selectedPlace);
+            }
+        }
+    }
+
     @Subscribe
     public void onPlaceAdded(BusEvent.PlaceAdded event) {
-        loadLocations();
+        loadPointsOfInterest();
         SnackbarFactory.createSnackbar(
                 this,
                 mLayoutRoot,
-                getString(R.string.text_place_saved)
+                getString(R.string.snackbar_poi_saved)
         ).show();
     }
 
     @OnClick(R.id.fab_add_place)
     public void onAddPlaceCLick() {
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-        Context context = getApplicationContext();
         try {
-            startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
+            Timber.e("GooglePlayServicesRepairableException thrown " + e);
         } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
+            Timber.e("GooglePlayServicesNotAvailableException thrown " + e);
         }
     }
 
@@ -155,12 +155,12 @@ public class MainActivity extends BaseActivity {
                 .subscribe(new Subscriber<PointOfInterest>() {
                     @Override
                     public void onCompleted() {
-                        Timber.e("IN MAIN COMPLETE");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Timber.e("There was an error saving the place " + e);
+                        DialogFactory.createSimpleErrorDialog(MainActivity.this).show();
                     }
 
                     @Override
@@ -169,14 +169,14 @@ public class MainActivity extends BaseActivity {
                             SnackbarFactory.createSnackbar(
                                     MainActivity.this,
                                     mLayoutRoot,
-                                    getString(R.string.text_place_exists)
+                                    getString(R.string.snackbar_poi_exists)
                             ).show();
                         }
                     }
                 }));
     }
 
-    private void loadLocations() {
+    private void loadPointsOfInterest() {
         mCompositeSubscription.add(mDataManager.getLocations()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
@@ -210,16 +210,19 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showDeleteDialog(final PointOfInterest pointOfInterest) {
-        DialogFactory.createSimpleYesNoErrorDialog(MainActivity.this, "Delete location", "Delete location?",
+        DialogFactory.createSimpleYesNoErrorDialog(
+                MainActivity.this,
+                getString(R.string.dialog_delete_poi_title),
+                getString(R.string.dialog_delete_poi_text, pointOfInterest.name),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteLocation(pointOfInterest);
+                        deletePointOfInterest(pointOfInterest);
                     }
                 }).show();
     }
 
-    private void deleteLocation(PointOfInterest pointOfInterest) {
+    private void deletePointOfInterest(PointOfInterest pointOfInterest) {
         mCompositeSubscription.add(mDataManager.deleteLocation(pointOfInterest)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
@@ -227,12 +230,16 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onCompleted() {
                         SnackbarFactory.createSnackbar(
-                                MainActivity.this, mLayoutRoot, "Location deleted").show();
+                                MainActivity.this,
+                                mLayoutRoot,
+                                getString(R.string.snackbar_poi_deleted)
+                        ).show();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Timber.e("There was an error deleting the location " + e);
+                        DialogFactory.createSimpleErrorDialog(MainActivity.this).show();
                     }
 
                     @Override
