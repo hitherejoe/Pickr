@@ -1,6 +1,8 @@
 package com.hitherejoe.pickr.data;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -28,7 +30,9 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
+import rx.functions.Action0;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class DataManager {
 
@@ -68,8 +72,22 @@ public class DataManager {
         return mDatabaseHelper.getLocations();
     }
 
-    public Observable<Location> saveLocation(Location location) {
-        return mDatabaseHelper.saveLocation(location);
+    public Observable<Location> saveLocation(final Context context, final Location location) {
+
+        return doesLocationExist(location.id).flatMap(new Func1<Boolean, Observable<Location>>() {
+            @Override
+            public Observable<Location> call(Boolean aBoolean) {
+                if (aBoolean) {
+                    return Observable.just(null);
+                }
+                return mDatabaseHelper.saveLocation(location).doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        postEventSafely(context, new BusEvent.PlaceAdded(location));
+                    }
+                });
+            }
+        });
     }
 
     public Observable<Location> deleteLocation(Location location) {
@@ -80,24 +98,26 @@ public class DataManager {
         return Observable.create(new Observable.OnSubscribe<PlaceAutocomplete>() {
             @Override
             public void call(Subscriber<? super PlaceAutocomplete> subscriber) {
+
                 PendingResult<AutocompletePredictionBuffer> results =
                         Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, query,
                                 bounds, null);
+
                 AutocompletePredictionBuffer autocompletePredictions = results
                         .await(60, TimeUnit.SECONDS);
 
-                // Confirm that the query completed successfully, otherwise return null
                 final Status status = autocompletePredictions.getStatus();
                 if (!status.isSuccess()) {
                     autocompletePredictions.release();
                     subscriber.onError(null);
                 } else {
-                    // Copy the results into our own data structure, because we can't hold onto the buffer.
-                    // AutocompletePrediction objects encapsulate the API response (place ID and description).
                     for (AutocompletePrediction autocompletePrediction : autocompletePredictions) {
-                        subscriber.onNext(new PlaceAutocomplete(autocompletePrediction.getPlaceId(), autocompletePrediction.getDescription()));
+                        subscriber.onNext(
+                                new PlaceAutocomplete(
+                                        autocompletePrediction.getPlaceId(),
+                                        autocompletePrediction.getDescription()
+                                ));
                     }
-                    // Release the buffer now that all data has been copied.
                     autocompletePredictions.release();
                     subscriber.onCompleted();
                 }
@@ -105,17 +125,23 @@ public class DataManager {
         });
     }
 
-    public Observable<Location> getLocation(String id) {
-        return mDatabaseHelper.getLocation(id);
+    public Observable<Boolean> doesLocationExist(String id) {
+        return mDatabaseHelper.getLocation(id).flatMap(new Func1<Location, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(Location location) {
+                return Observable.just(location != null);
+            }
+        });
     }
 
     public Observable<Place> getPlaces(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
-        return getAutocompleteResults(mGoogleApiClient, query, bounds).flatMap(new Func1<PlaceAutocomplete, Observable<Place>>() {
-            @Override
-            public Observable<Place> call(PlaceAutocomplete placeAutocomplete) {
-                return getPlace(mGoogleApiClient, placeAutocomplete.placeId.toString());
-            }
-        });
+        return getAutocompleteResults(mGoogleApiClient, query, bounds)
+                .flatMap(new Func1<PlaceAutocomplete, Observable<Place>>() {
+                    @Override
+                    public Observable<Place> call(PlaceAutocomplete placeAutocomplete) {
+                        return getPlace(mGoogleApiClient, placeAutocomplete.placeId.toString());
+                    }
+                });
     }
 
     public Observable<Place> getPlace(final GoogleApiClient mGoogleApiClient, final String id) {
@@ -128,7 +154,6 @@ public class DataManager {
                     @Override
                     public void onResult(PlaceBuffer places) {
                         if (!places.getStatus().isSuccess()) {
-                            // Request did not complete successfully
                             places.release();
                             subscriber.onError(null);
                         } else {
@@ -137,6 +162,15 @@ public class DataManager {
                         }
                     }
                 });
+            }
+        });
+    }
+
+    private void postEventSafely(final Context context, final Object event) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                PickrApplication.get(context).getComponent().eventBus().post(event);
             }
         });
     }

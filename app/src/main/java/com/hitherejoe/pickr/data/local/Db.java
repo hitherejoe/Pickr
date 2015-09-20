@@ -31,7 +31,7 @@ public class Db {
 
         public static final String CREATE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
-                        COLUMN_ID + " INTEGER PRIMARY KEY NOT NULL," +
+                        COLUMN_ID + " TEXT PRIMARY KEY NOT NULL," +
                         COLUMN_NAME + " TEXT NOT NULL," +
                         COLUMN_ADDRESS + " TEXT NOT NULL," +
                         COLUMN_LAT_LNG + " TEXT NOT NULL," +
@@ -46,6 +46,7 @@ public class Db {
         public static ContentValues toContentValues(Location location) {
             Gson gson = DataUtils.getGsonInstance();
             ContentValues values = new ContentValues();
+            values.put(COLUMN_ID, location.id);
             values.put(COLUMN_NAME, location.name);
             values.put(COLUMN_ADDRESS, location.address);
             values.put(COLUMN_LAT_LNG, gson.toJson(location.latLng));
@@ -61,6 +62,7 @@ public class Db {
         public static Location parseCursor(Cursor cursor) {
             Gson gson = DataUtils.getGsonInstance();
             Location location = new Location();
+            location.id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID));
             location.name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
             location.address = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDRESS));
             location.latLng = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAT_LNG)), LatLng.class);

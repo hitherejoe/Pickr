@@ -1,5 +1,6 @@
 package com.hitherejoe.pickr.ui.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,17 +15,21 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.R;
+import com.hitherejoe.pickr.data.BusEvent;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.model.Location;
 import com.hitherejoe.pickr.ui.adapter.LocationHolder;
 import com.hitherejoe.pickr.util.DialogFactory;
 import com.hitherejoe.pickr.util.SnackbarFactory;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
@@ -55,6 +60,7 @@ public class MainActivity extends BaseActivity {
     Toolbar mToolbar;
 
     private static final int PLACE_PICKER_REQUEST = 1020;
+    private static final int REQUEST_CODE_PLAY_SERVICES = 1235;
 
     private CompositeSubscription mCompositeSubscription;
     private DataManager mDataManager;
@@ -68,10 +74,10 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         mCompositeSubscription = new CompositeSubscription();
         mDataManager = PickrApplication.get(this).getComponent().dataManager();
-
+        PickrApplication.get(this).getComponent().eventBus().register(this);
         setupToolbar();
         setupRecyclerView();
-        loadLocations();
+        if (checkPlayServices()) loadLocations();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -86,6 +92,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        PickrApplication.get(this).getComponent().eventBus().unregister(this);
         mCompositeSubscription.unsubscribe();
     }
 
@@ -104,6 +111,16 @@ public class MainActivity extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Subscribe
+    public void onPlaceAdded(BusEvent.PlaceAdded event) {
+        loadLocations();
+        SnackbarFactory.createSnackbar(
+                this,
+                mLayoutRoot,
+                getString(R.string.text_place_saved)
+        ).show();
     }
 
     @OnClick(R.id.fab_add_place)
@@ -131,13 +148,13 @@ public class MainActivity extends BaseActivity {
 
     private void savePlace(Place place) {
         Location location = Location.fromPlace(place);
-        mCompositeSubscription.add(mDataManager.saveLocation(location)
+        mCompositeSubscription.add(mDataManager.saveLocation(this, location)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
                 .subscribe(new Subscriber<Location>() {
                     @Override
                     public void onCompleted() {
-
+                        Timber.e("IN MAIN COMPLETE");
                     }
 
                     @Override
@@ -147,13 +164,12 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onNext(Location location) {
-
+                        Timber.e("IN MAIN NEXT");
                     }
                 }));
     }
 
     private void loadLocations() {
-        Timber.e("CALLED");
         mCompositeSubscription.add(mDataManager.getLocations()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
@@ -175,12 +191,12 @@ public class MainActivity extends BaseActivity {
                         mProgressBar.setVisibility(View.GONE);
                         if (locations.size() > 0) {
                             mEasyRecycleAdapter.setItems(locations);
-                            mEasyRecycleAdapter.notifyDataSetChanged();
+                            mCharactersRecycler.setVisibility(View.VISIBLE);
+                            mNoPlacesText.setVisibility(View.GONE);
                         } else {
                             mCharactersRecycler.setVisibility(View.GONE);
                             mNoPlacesText.setVisibility(View.VISIBLE);
                         }
-
                     }
                 }));
     }
@@ -216,6 +232,31 @@ public class MainActivity extends BaseActivity {
                         mEasyRecycleAdapter.removeItem(location);
                     }
                 }));
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(
+                        resultCode, this, REQUEST_CODE_PLAY_SERVICES).show();
+            } else {
+                Dialog playServicesDialog = DialogFactory.createSimpleOkErrorDialog(
+                        this,
+                        getString(R.string.dialog_error_title),
+                        getString(R.string.error_message_play_services)
+                );
+                playServicesDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        finish();
+                    }
+                });
+                playServicesDialog.show();
+            }
+            return false;
+        }
+        return true;
     }
 
     private LocationHolder.LocationListener mLocationListener = new LocationHolder.LocationListener() {

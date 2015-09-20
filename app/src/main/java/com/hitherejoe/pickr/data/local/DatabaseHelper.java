@@ -13,6 +13,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class DatabaseHelper {
 
@@ -56,7 +57,7 @@ public class DatabaseHelper {
                     public Location call(SqlBrite.Query query) {
                         Location result = null;
                         Cursor cursor = query.run();
-                        if (cursor.getCount() == 1 && cursor.moveToFirst()) {
+                        if (cursor.moveToFirst()) {
                             Location location = Db.LocationTable.parseCursor(cursor);
                             if (location.id.equals(id)) result = location;
                         }
@@ -75,6 +76,8 @@ public class DatabaseHelper {
                         Cursor cursor = query.run();
                         List<Location> result = new ArrayList<>();
                         while (cursor.moveToNext()) {
+                            Location l = Db.LocationTable.parseCursor(cursor);
+                            if(l.name.equals("Warsaw")) Timber.e("LOCATION: " + l.id);
                             result.add(Db.LocationTable.parseCursor(cursor));
                         }
                         cursor.close();

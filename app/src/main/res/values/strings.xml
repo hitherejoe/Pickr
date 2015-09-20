@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidBoilerPlate</string>
+    <string name="app_name">Pickr</string>
 
     <!-- Activity labels -->
     <string name="label_main">Pickr</string>
@@ -52,15 +52,8 @@
 
     <string name="text_place_saved">Place saved</string>
 
-    <!-- Arrays -->
+    <!-- Error messages -->
 
-    <integer-array name="characters">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-    </integer-array>
+    <string name="error_message_play_services">Sorry, you need Google Play Services to use this app :(</string>
 
 </resources>

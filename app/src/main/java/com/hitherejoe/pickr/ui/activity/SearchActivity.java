@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -45,6 +47,9 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     @Bind(R.id.layout_search)
     CoordinatorLayout mLayoutSearch;
+
+    @Bind(R.id.progress_indicator)
+    ProgressBar mProgressBar;
 
     @Bind(R.id.recycler_places)
     RecyclerView mPlacesRecycler;
@@ -167,54 +172,17 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                         }));
     }
 
-    private void checkPlace(final Place place) {
-        mSubscriptions.add(mDataManager.getLocation(place.getId())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(mDataManager.getScheduler())
-                .subscribe(new Subscriber<Location>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e("There was an error retrieving the place..." + e);
-                    }
-
-                    @Override
-                    public void onNext(Location location) {
-                        if (location == null) {
-                            savePlace(place);
-                        } else {
-                            DialogFactory.createSimpleOkErrorDialog(
-                                    SearchActivity.this,
-                                    "Error",
-                                    "This place is already saved!"
-                            ).show();
-                        }
-                    }
-                }));
-    }
-
-    private void savePlace(Place place) {
+    private void savePlace(final Place place) {
+        Timber.e("IDDD " + place.getId());
         mProgressDialog = DialogFactory.createProgressDialog(this, R.string.text_saving_location);
         mProgressDialog.show();
         Location location = Location.fromPlace(place);
-        mSubscriptions.add(mDataManager.saveLocation(location)
+        mSubscriptions.add(mDataManager.saveLocation(this, location)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
                 .subscribe(new Subscriber<Location>() {
                     @Override
-                    public void onCompleted() {
-                        SnackbarFactory.createSnackbar(
-                                SearchActivity.this,
-                                mLayoutSearch,
-                                getString(R.string.text_place_saved)
-                        ).show();
-                        mProgressDialog.dismiss();
-                        finish();
-                    }
+                    public void onCompleted() { }
 
                     @Override
                     public void onError(Throwable e) {
@@ -223,12 +191,14 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
 
                     @Override
                     public void onNext(Location location) {
-
+                        mProgressDialog.dismiss();
+                        finish();
                     }
                 }));
     }
 
     private void getAutocompleteResults(String queryText) {
+        mProgressBar.setVisibility(View.VISIBLE);
         LatLng latLng = new LatLng(
                 mCurrentKnownLocation.getLatitude(),
                 mCurrentKnownLocation.getLongitude()
@@ -240,12 +210,13 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .subscribe(new Subscriber<Place>() {
                     @Override
                     public void onCompleted() {
-
+                        mProgressBar.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Timber.e("There was an error saving the selected place... " + e);
+                        mProgressBar.setVisibility(View.GONE);
+                        Timber.e("There was an error getting place suggestions... " + e);
                     }
 
                     @Override
@@ -264,7 +235,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     private SearchHolder.LocationListener mLocationListener = new SearchHolder.LocationListener() {
         @Override
         public void onLocationPress(Place location) {
-            checkPlace(location);
+            savePlace(location);
         }
     };
 }
