@@ -13,12 +13,12 @@ import uk.co.ribot.easyadapter.annotations.LayoutId;
 import uk.co.ribot.easyadapter.annotations.ViewId;
 
 @LayoutId(R.layout.item_location)
-public class LocationHolder extends ItemViewHolder<PointOfInterest> {
+public class PointOfInterestHolder extends ItemViewHolder<PointOfInterest> {
 
     @ViewId(R.id.text_name)
     TextView mLocationNameText;
 
-    public LocationHolder(View view) {
+    public PointOfInterestHolder(View view) {
         super(view);
     }
 

@@ -61,9 +61,8 @@
                         android:text="@string/text_title_name"/>
 
                     <TextView
-                        android:id="@+id/text_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/DetailTextStyle"
+                        android:id="@+id/text_name"/>
 
                 </LinearLayout>
 
@@ -81,9 +80,8 @@
                         android:text="@string/text_title_address"/>
 
                     <TextView
-                        android:id="@+id/text_address"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/DetailTextStyle"
+                        android:id="@+id/text_address"/>
 
                 </LinearLayout>
 
@@ -101,9 +99,8 @@
                         android:text="@string/text_title_phone_number"/>
 
                     <TextView
-                        android:id="@+id/text_phone_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/DetailTextStyle"
+                        android:id="@+id/text_phone_number"/>
 
                 </LinearLayout>
 
@@ -121,9 +118,8 @@
                         android:text="@string/text_title_website"/>
 
                     <TextView
-                        android:id="@+id/text_website"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/DetailTextStyle"
+                        android:id="@+id/text_website"/>
 
                 </LinearLayout>
 
@@ -141,9 +137,8 @@
                         android:text="@string/text_title_locale"/>
 
                     <TextView
-                        android:id="@+id/text_locale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/DetailTextStyle"
+                        android:id="@+id/text_locale"/>
 
                 </LinearLayout>
 
@@ -161,9 +156,8 @@
                         android:text="@string/text_title_rating"/>
 
                     <TextView
-                        android:id="@+id/text_rating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/DetailTextStyle"
+                        android:id="@+id/text_rating"/>
 
                 </LinearLayout>
 
@@ -181,9 +175,8 @@
                         android:text="@string/text_title_price_level"/>
 
                     <TextView
-                        android:id="@+id/text_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/DetailTextStyle"
+                        android:id="@+id/text_price"/>
 
                 </LinearLayout>
 

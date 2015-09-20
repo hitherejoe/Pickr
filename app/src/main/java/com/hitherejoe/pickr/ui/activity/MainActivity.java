@@ -26,7 +26,7 @@ import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.BusEvent;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.model.PointOfInterest;
-import com.hitherejoe.pickr.ui.adapter.LocationHolder;
+import com.hitherejoe.pickr.ui.adapter.PointOfInterestHolder;
 import com.hitherejoe.pickr.util.DialogFactory;
 import com.hitherejoe.pickr.util.SnackbarFactory;
 import com.squareup.otto.Subscribe;
@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity {
 
     private void setupRecyclerView() {
         mCharactersRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mEasyRecycleAdapter = new EasyRecyclerAdapter<>(this, LocationHolder.class, mLocationListener);
+        mEasyRecycleAdapter = new EasyRecyclerAdapter<>(this, PointOfInterestHolder.class, mLocationListener);
         mCharactersRecycler.setAdapter(mEasyRecycleAdapter);
     }
 
@@ -265,7 +265,7 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-    private LocationHolder.LocationListener mLocationListener = new LocationHolder.LocationListener() {
+    private PointOfInterestHolder.LocationListener mLocationListener = new PointOfInterestHolder.LocationListener() {
         @Override
         public void onLocationLongPress(PointOfInterest pointOfInterest) {
             showDeleteDialog(pointOfInterest);

@@ -18,6 +18,7 @@
 
     <style name="AppTheme.ActionBar" parent="AppTheme">
         <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColor">@color/white</item>
         <item name="drawerArrowStyle">@style/HamburgerIconStyle</item>
         <item name="android:itemTextAppearance">@style/OptionsMenuTextColor</item>
     </style>
@@ -46,6 +47,13 @@
         <item name="android:textColor">@color/primary</item>
         <item name="android:textSize">@dimen/text_body</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DetailTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black_87pc</item>
+        <item name="android:textSize">@dimen/text_body</item>
     </style>
 
     <style name="CardButtonTextStyle">
