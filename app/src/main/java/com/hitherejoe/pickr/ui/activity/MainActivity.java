@@ -31,6 +31,7 @@ import com.hitherejoe.pickr.util.DialogFactory;
 import com.hitherejoe.pickr.util.SnackbarFactory;
 import com.squareup.otto.Subscribe;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -193,10 +194,11 @@ public class MainActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(List<PointOfInterest> pointOfInterests) {
+                    public void onNext(List<PointOfInterest> pointsOfInterest) {
                         mProgressBar.setVisibility(View.GONE);
-                        if (pointOfInterests.size() > 0) {
-                            mEasyRecycleAdapter.setItems(pointOfInterests);
+                        if (pointsOfInterest.size() > 0) {
+                            Collections.sort(pointsOfInterest);
+                            mEasyRecycleAdapter.setItems(pointsOfInterest);
                             mCharactersRecycler.setVisibility(View.VISIBLE);
                             mNoPlacesText.setVisibility(View.GONE);
                         } else {

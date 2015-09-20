@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
 import com.hitherejoe.pickr.data.model.PointOfInterest;
-import com.hitherejoe.pickr.data.model.PlaceAutocomplete;
+import com.hitherejoe.pickr.data.model.AutocompletePlace;
 import com.hitherejoe.pickr.injection.component.DaggerDataManagerComponent;
 import com.hitherejoe.pickr.injection.module.DataManagerModule;
 import com.squareup.otto.Bus;
@@ -81,7 +81,7 @@ public class DataManager {
                 return mDatabaseHelper.saveLocation(pointOfInterest).doOnCompleted(new Action0() {
                     @Override
                     public void call() {
-                        postEventSafely(context, new BusEvent.PlaceAdded(pointOfInterest));
+                        postEventSafely(context, new BusEvent.PlaceAdded());
                     }
                 });
             }
@@ -92,10 +92,10 @@ public class DataManager {
         return mDatabaseHelper.deleteLocation(pointOfInterest);
     }
 
-    public Observable<PlaceAutocomplete> getAutocompleteResults(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
-        return Observable.create(new Observable.OnSubscribe<PlaceAutocomplete>() {
+    public Observable<AutocompletePlace> getAutocompleteResults(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
+        return Observable.create(new Observable.OnSubscribe<AutocompletePlace>() {
             @Override
-            public void call(Subscriber<? super PlaceAutocomplete> subscriber) {
+            public void call(Subscriber<? super AutocompletePlace> subscriber) {
 
                 PendingResult<AutocompletePredictionBuffer> results =
                         Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, query,
@@ -111,7 +111,7 @@ public class DataManager {
                 } else {
                     for (AutocompletePrediction autocompletePrediction : autocompletePredictions) {
                         subscriber.onNext(
-                                new PlaceAutocomplete(
+                                new AutocompletePlace(
                                         autocompletePrediction.getPlaceId(),
                                         autocompletePrediction.getDescription()
                                 ));
@@ -134,10 +134,10 @@ public class DataManager {
 
     public Observable<Place> getPlaces(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
         return getAutocompleteResults(mGoogleApiClient, query, bounds)
-                .flatMap(new Func1<PlaceAutocomplete, Observable<Place>>() {
+                .flatMap(new Func1<AutocompletePlace, Observable<Place>>() {
                     @Override
-                    public Observable<Place> call(PlaceAutocomplete placeAutocomplete) {
-                        return getPlace(mGoogleApiClient, placeAutocomplete.placeId.toString());
+                    public Observable<Place> call(AutocompletePlace autocompletePlace) {
+                        return getPlace(mGoogleApiClient, autocompletePlace.placeId.toString());
                     }
                 });
     }

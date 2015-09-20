@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.Locale;
 
-public class PointOfInterest implements Parcelable {
+public class PointOfInterest implements Parcelable, Comparable<PointOfInterest> {
 
     public String id;
     public String name;
@@ -81,4 +81,9 @@ public class PointOfInterest implements Parcelable {
             return new PointOfInterest[size];
         }
     };
+
+    @Override
+    public int compareTo(PointOfInterest pointOfInterest) {
+        return name.compareToIgnoreCase(pointOfInterest.name);
+    }
 }
