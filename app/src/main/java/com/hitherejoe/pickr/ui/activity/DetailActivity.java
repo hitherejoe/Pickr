@@ -31,55 +31,56 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.text_name)
-    TextView mNameText;
-
     @Bind(R.id.layout_name)
     LinearLayout mNameLayout;
 
-    @Bind(R.id.text_address)
-    TextView mAddressText;
+    @Bind(R.id.text_name)
+    TextView mNameText;
 
     @Bind(R.id.layout_address)
     LinearLayout mAddressLayout;
 
-    @Bind(R.id.text_phone_number)
-    TextView mPhoneNumberText;
+    @Bind(R.id.text_address)
+    TextView mAddressText;
 
     @Bind(R.id.layout_phone_number)
     LinearLayout mPhoneNumberLayout;
 
-    @Bind(R.id.text_website)
-    TextView mWebsiteText;
+    @Bind(R.id.text_phone_number)
+    TextView mPhoneNumberText;
 
     @Bind(R.id.layout_website)
     LinearLayout mWebsiteLayout;
 
-    @Bind(R.id.text_locale)
-    TextView mLocaleText;
+    @Bind(R.id.text_website)
+    TextView mWebsiteText;
 
     @Bind(R.id.layout_locale)
     LinearLayout mLocaleLayout;
 
-    @Bind(R.id.text_rating)
-    TextView mRatingText;
+    @Bind(R.id.text_locale)
+    TextView mLocaleText;
 
     @Bind(R.id.layout_rating)
     LinearLayout mRatingLayout;
 
-    @Bind(R.id.text_price)
-    TextView mPriceText;
+    @Bind(R.id.text_rating)
+    TextView mRatingText;
 
     @Bind(R.id.layout_price)
     LinearLayout mPriceLayout;
 
-    private static final String EXTRA_LOCATION =
-            "com.hitherejoe.pickr.ui.activity.DetailActivity.EXTRA_LOCATION";
+    @Bind(R.id.text_price)
+    TextView mPriceText;
+
+    private static final String EXTRA_POI =
+            "com.hitherejoe.pickr.ui.activity.DetailActivity.EXTRA_POI";
+
     private PointOfInterest mPointOfInterest;
 
     public static Intent getStartIntent(Context context, PointOfInterest pointOfInterest) {
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(EXTRA_LOCATION, pointOfInterest);
+        intent.putExtra(EXTRA_POI, pointOfInterest);
         return intent;
     }
 
@@ -88,7 +89,7 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-        mPointOfInterest = getIntent().getParcelableExtra(EXTRA_LOCATION);
+        mPointOfInterest = getIntent().getParcelableExtra(EXTRA_POI);
         if (mPointOfInterest == null) {
             throw new IllegalArgumentException("DetailActivity requires a Location object!");
         }

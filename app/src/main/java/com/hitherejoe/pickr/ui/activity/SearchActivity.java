@@ -64,9 +64,9 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     private DataManager mDataManager;
     private Dialog mDialog;
     private EasyRecyclerAdapter<Place> mEasyRecycleAdapter;
+    private Location mCurrentKnownLocation;
     private ProgressDialog mProgressDialog;
     private ReactiveLocationProvider mLocationProvider;
-    private Location mCurrentKnownLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +75,14 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
         ButterKnife.bind(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0 /* clientId */, this)
+                .enableAutoManage(this, 0, this)
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
         mDataManager = PickrApplication.get(this).getComponent().dataManager();
         mSubscriptions = new CompositeSubscription();
         mLocationProvider = new ReactiveLocationProvider(this);
-        mProgressDialog = DialogFactory.createProgressDialog(this, R.string.text_getting_location);
+        mProgressDialog = DialogFactory.createProgressDialog(this, R.string.dialog_text_getting_location);
 
         retrieveDeviceCurrentLocation();
         setupToolbar();
@@ -93,6 +93,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     public void onDestroy() {
         super.onDestroy();
         if (mDialog != null) mDialog.dismiss();
+        mSubscriptions.unsubscribe();
     }
 
     @Override
@@ -104,7 +105,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Timber.e("Connection error..." + result.getErrorCode() + " : " + result.getErrorCode());
+        Timber.e("Connection error: " + result.getErrorCode() + " : " + result.getErrorCode());
         DialogFactory.createSimpleOkErrorDialog(
                 this,
                 "Error",
@@ -162,8 +163,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .startWith(lastKnownLocationObservable)
                 .subscribe(new Observer<Location>() {
                     @Override
-                    public void onCompleted() {
-                    }
+                    public void onCompleted() { }
 
                     @Override
                     public void onError(Throwable e) {
@@ -180,8 +180,9 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
     private void savePlace(final Place place) {
-        mProgressDialog = DialogFactory.createProgressDialog(this, R.string.text_saving_location);
+        mProgressDialog = DialogFactory.createProgressDialog(this, R.string.dialog_text_saving_location);
         mProgressDialog.show();
+
         PointOfInterest pointOfInterest = PointOfInterest.fromPlace(place);
         mSubscriptions.add(mDataManager.saveLocation(this, pointOfInterest)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -203,7 +204,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                                 mDialog = DialogFactory.createSimpleOkErrorDialog(
                                         SearchActivity.this,
                                         getString(R.string.dialog_error_title),
-                                        getString(R.string.text_place_exists)
+                                        getString(R.string.dialog_text_place_exists)
                                 );
                             }
                             mDialog.show();
@@ -220,7 +221,8 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 mCurrentKnownLocation.getLatitude(),
                 mCurrentKnownLocation.getLongitude()
         );
-        LatLngBounds latLngBounds = convertCenterAndRadiusToBounds(latLng, 5);
+        LatLngBounds latLngBounds = latitudeLongitudeToBounds(latLng, 5);
+        mSubscriptions.unsubscribe();
         mSubscriptions.add(mDataManager.getPlaces(mGoogleApiClient, queryText, latLngBounds)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
@@ -243,7 +245,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 }));
     }
 
-    private LatLngBounds convertCenterAndRadiusToBounds(LatLng center, double radius) {
+    private LatLngBounds latitudeLongitudeToBounds(LatLng center, double radius) {
         LatLng southwest = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 225);
         LatLng northeast = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 45);
         return new LatLngBounds(southwest, northeast);

@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity {
     ProgressBar mProgressBar;
 
     @Bind(R.id.recycler_characters)
-    RecyclerView mCharactersRecycler;
+    RecyclerView mPoiRecycler;
 
     @Bind(R.id.text_no_places)
     TextView mNoPlacesText;
@@ -142,9 +142,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupRecyclerView() {
-        mCharactersRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mPoiRecycler.setLayoutManager(new LinearLayoutManager(this));
         mEasyRecycleAdapter = new EasyRecyclerAdapter<>(this, PointOfInterestHolder.class, mLocationListener);
-        mCharactersRecycler.setAdapter(mEasyRecycleAdapter);
+        mPoiRecycler.setAdapter(mEasyRecycleAdapter);
     }
 
     private void savePlace(Place place) {
@@ -199,10 +199,10 @@ public class MainActivity extends BaseActivity {
                         if (pointsOfInterest.size() > 0) {
                             Collections.sort(pointsOfInterest);
                             mEasyRecycleAdapter.setItems(pointsOfInterest);
-                            mCharactersRecycler.setVisibility(View.VISIBLE);
+                            mPoiRecycler.setVisibility(View.VISIBLE);
                             mNoPlacesText.setVisibility(View.GONE);
                         } else {
-                            mCharactersRecycler.setVisibility(View.GONE);
+                            mPoiRecycler.setVisibility(View.GONE);
                             mNoPlacesText.setVisibility(View.VISIBLE);
                         }
                     }
