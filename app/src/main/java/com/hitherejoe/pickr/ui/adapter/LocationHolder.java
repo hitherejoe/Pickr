@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.hitherejoe.pickr.R;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.ui.activity.DetailActivity;
 
 import uk.co.ribot.easyadapter.ItemViewHolder;
@@ -13,7 +13,7 @@ import uk.co.ribot.easyadapter.annotations.LayoutId;
 import uk.co.ribot.easyadapter.annotations.ViewId;
 
 @LayoutId(R.layout.item_location)
-public class LocationHolder extends ItemViewHolder<Location> {
+public class LocationHolder extends ItemViewHolder<PointOfInterest> {
 
     @ViewId(R.id.text_name)
     TextView mLocationNameText;
@@ -23,8 +23,8 @@ public class LocationHolder extends ItemViewHolder<Location> {
     }
 
     @Override
-    public void onSetValues(Location location, PositionInfo positionInfo) {
-        mLocationNameText.setText(location.name);
+    public void onSetValues(PointOfInterest pointOfInterest, PositionInfo positionInfo) {
+        mLocationNameText.setText(pointOfInterest.name);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class LocationHolder extends ItemViewHolder<Location> {
     }
 
     public interface LocationListener {
-        void onLocationLongPress(Location location);
+        void onLocationLongPress(PointOfInterest pointOfInterest);
     }
 
 }

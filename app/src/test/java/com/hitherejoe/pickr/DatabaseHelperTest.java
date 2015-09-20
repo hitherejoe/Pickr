@@ -4,7 +4,7 @@ import android.database.Cursor;
 
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
 import com.hitherejoe.pickr.data.local.Db;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.util.DefaultConfig;
 import com.hitherejoe.pickr.util.MockModelsUtil;
 
@@ -36,31 +36,31 @@ public class DatabaseHelperTest {
 
     @Test
     public void shouldSetCharacters() throws Exception {
-        List<Location> locations = MockModelsUtil.createListOfMockCharacters(5);
+        List<PointOfInterest> pointOfInterests = MockModelsUtil.createListOfMockCharacters(5);
 
-        TestSubscriber<Location> result = new TestSubscriber<>();
-        mDatabaseHelper.setCharacters(locations).subscribe(result);
+        TestSubscriber<PointOfInterest> result = new TestSubscriber<>();
+        mDatabaseHelper.setCharacters(pointOfInterests).subscribe(result);
         result.assertNoErrors();
-        result.assertReceivedOnNext(locations);
+        result.assertReceivedOnNext(pointOfInterests);
 
         Cursor cursor = mDatabaseHelper.getBriteDb()
                 .query("SELECT * FROM " + Db.CharacterTable.TABLE_NAME);
         assertEquals(5, cursor.getCount());
-        for (Location location : locations) {
+        for (PointOfInterest pointOfInterest : pointOfInterests) {
             cursor.moveToNext();
-            assertEquals(location, Db.CharacterTable.parseCursor(cursor));
+            assertEquals(pointOfInterest, Db.CharacterTable.parseCursor(cursor));
         }
     }
 
     @Test
     public void shouldGetCharacters() throws Exception {
-        List<Location> locations = MockModelsUtil.createListOfMockCharacters(5);
+        List<PointOfInterest> pointOfInterests = MockModelsUtil.createListOfMockCharacters(5);
 
-        mDatabaseHelper.setCharacters(locations).subscribe();
+        mDatabaseHelper.setCharacters(pointOfInterests).subscribe();
 
-        TestSubscriber<List<Location>> result = new TestSubscriber<>();
+        TestSubscriber<List<PointOfInterest>> result = new TestSubscriber<>();
         mDatabaseHelper.getCharacters().subscribe(result);
         result.assertNoErrors();
-        result.assertReceivedOnNext(Collections.singletonList(locations));
+        result.assertReceivedOnNext(Collections.singletonList(pointOfInterests));
     }
 }

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.ui.activity.DetailActivity;
 import com.hitherejoe.pickr.util.MockModelsUtil;
 import com.hitherejoe.module_test_only.injection.TestComponentRule;
@@ -23,7 +23,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
-public class LocationActivityTest {
+public class PointOfInterestActivityTest {
 
     private Context mContext;
 
@@ -41,8 +41,8 @@ public class LocationActivityTest {
 
     @Test
     public void testCharacterTextIsDisplayed() {
-        Location mockLocation = MockModelsUtil.createMockCharacter();
-        Intent i = DetailActivity.getStartIntent(mContext, mockLocation);
+        PointOfInterest mockPointOfInterest = MockModelsUtil.createMockCharacter();
+        Intent i = DetailActivity.getStartIntent(mContext, mockPointOfInterest);
         main.launchActivity(i);
 
         onView(withText(com.hitherejoe.pickr.R.string.text_lorem_ipsum))

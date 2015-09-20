@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.hitherejoe.pickr.R;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -75,11 +75,11 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
 
     private static final String EXTRA_LOCATION =
             "com.hitherejoe.pickr.ui.activity.DetailActivity.EXTRA_LOCATION";
-    private Location mLocation;
+    private PointOfInterest mPointOfInterest;
 
-    public static Intent getStartIntent(Context context, Location location) {
+    public static Intent getStartIntent(Context context, PointOfInterest pointOfInterest) {
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(EXTRA_LOCATION, location);
+        intent.putExtra(EXTRA_LOCATION, pointOfInterest);
         return intent;
     }
 
@@ -88,8 +88,8 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-        mLocation = getIntent().getParcelableExtra(EXTRA_LOCATION);
-        if (mLocation == null) {
+        mPointOfInterest = getIntent().getParcelableExtra(EXTRA_LOCATION);
+        if (mPointOfInterest == null) {
             throw new IllegalArgumentException("DetailActivity requires a Location object!");
         }
         ((MapFragment) getFragmentManager().findFragmentById(R.id.fragment_map)).getMapAsync(this);
@@ -102,7 +102,7 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
         googleMap.setMyLocationEnabled(true);
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-        LatLng latLng = mLocation.latLng;
+        LatLng latLng = mPointOfInterest.latLng;
         if (latLng != null) {
             googleMap.addMarker(new MarkerOptions().position(latLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
@@ -115,36 +115,36 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            mToolbar.setTitle(mLocation.name);
+            mToolbar.setTitle(mPointOfInterest.name);
         }
     }
 
     private void setupLocationData() {
 
-        String placeName = mLocation.name;
+        String placeName = mPointOfInterest.name;
         if (placeName != null && !placeName.isEmpty()) {
-            mNameText.setText(mLocation.name);
+            mNameText.setText(mPointOfInterest.name);
         } else {
             mNameLayout.setVisibility(View.GONE);
         }
 
-        String placeAddress = mLocation.address;
+        String placeAddress = mPointOfInterest.address;
         if (placeAddress != null && !placeAddress.isEmpty()) {
             mAddressText.setText(placeAddress);
         } else {
             mAddressLayout.setVisibility(View.GONE);
         }
 
-        String placePhoneNumber = mLocation.phoneNumber;
+        String placePhoneNumber = mPointOfInterest.phoneNumber;
         if (placePhoneNumber != null && !placePhoneNumber.isEmpty()) {
             mPhoneNumberText.setText(placePhoneNumber);
         } else {
             mPhoneNumberLayout.setVisibility(View.GONE);
         }
 
-        if (mLocation.websiteUri != null) {
+        if (mPointOfInterest.websiteUri != null) {
             try {
-                java.net.URI uri = new java.net.URI(mLocation.websiteUri.toString());
+                java.net.URI uri = new java.net.URI(mPointOfInterest.websiteUri.toString());
                 mWebsiteText.setText(uri.toURL().toString());
             } catch (URISyntaxException e) {
                 e.printStackTrace();
@@ -155,21 +155,21 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
             mWebsiteLayout.setVisibility(View.GONE);
         }
 
-        Locale placeLocale = mLocation.locale;
+        Locale placeLocale = mPointOfInterest.locale;
         if (placeLocale != null) {
             mLocaleText.setText(placeLocale.getDisplayName());
         } else {
             mLocaleLayout.setVisibility(View.GONE);
         }
 
-        float placeRating = mLocation.rating;
+        float placeRating = mPointOfInterest.rating;
         if (placeRating > 0) {
             mRatingText.setText(String.valueOf(placeRating));
         } else {
             mRatingLayout.setVisibility(View.GONE);
         }
 
-        float placePrice = mLocation.priceLevel;
+        float placePrice = mPointOfInterest.priceLevel;
         if (placePrice > 0) {
             mPriceText.setText(String.valueOf(placePrice));
         } else {

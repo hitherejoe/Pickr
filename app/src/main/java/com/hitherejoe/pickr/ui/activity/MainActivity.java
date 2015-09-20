@@ -25,7 +25,7 @@ import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.BusEvent;
 import com.hitherejoe.pickr.data.DataManager;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.ui.adapter.LocationHolder;
 import com.hitherejoe.pickr.util.DialogFactory;
 import com.hitherejoe.pickr.util.SnackbarFactory;
@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity {
 
     private CompositeSubscription mCompositeSubscription;
     private DataManager mDataManager;
-    private EasyRecyclerAdapter<Location> mEasyRecycleAdapter;
+    private EasyRecyclerAdapter<PointOfInterest> mEasyRecycleAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,11 +147,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void savePlace(Place place) {
-        Location location = Location.fromPlace(place);
-        mCompositeSubscription.add(mDataManager.saveLocation(this, location)
+        PointOfInterest pointOfInterest = PointOfInterest.fromPlace(place);
+        mCompositeSubscription.add(mDataManager.saveLocation(this, pointOfInterest)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
-                .subscribe(new Subscriber<Location>() {
+                .subscribe(new Subscriber<PointOfInterest>() {
                     @Override
                     public void onCompleted() {
                         Timber.e("IN MAIN COMPLETE");
@@ -163,8 +163,8 @@ public class MainActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(Location location) {
-                        if (location == null) {
+                    public void onNext(PointOfInterest pointOfInterest) {
+                        if (pointOfInterest == null) {
                             SnackbarFactory.createSnackbar(
                                     MainActivity.this,
                                     mLayoutRoot,
@@ -179,7 +179,7 @@ public class MainActivity extends BaseActivity {
         mCompositeSubscription.add(mDataManager.getLocations()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
-                .subscribe(new Subscriber<List<Location>>() {
+                .subscribe(new Subscriber<List<PointOfInterest>>() {
                     @Override
                     public void onCompleted() {
 
@@ -193,10 +193,10 @@ public class MainActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(List<Location> locations) {
+                    public void onNext(List<PointOfInterest> pointOfInterests) {
                         mProgressBar.setVisibility(View.GONE);
-                        if (locations.size() > 0) {
-                            mEasyRecycleAdapter.setItems(locations);
+                        if (pointOfInterests.size() > 0) {
+                            mEasyRecycleAdapter.setItems(pointOfInterests);
                             mCharactersRecycler.setVisibility(View.VISIBLE);
                             mNoPlacesText.setVisibility(View.GONE);
                         } else {
@@ -207,21 +207,21 @@ public class MainActivity extends BaseActivity {
                 }));
     }
 
-    private void showDeleteDialog(final Location location) {
+    private void showDeleteDialog(final PointOfInterest pointOfInterest) {
         DialogFactory.createSimpleYesNoErrorDialog(MainActivity.this, "Delete location", "Delete location?",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteLocation(location);
+                        deleteLocation(pointOfInterest);
                     }
                 }).show();
     }
 
-    private void deleteLocation(Location location) {
-        mCompositeSubscription.add(mDataManager.deleteLocation(location)
+    private void deleteLocation(PointOfInterest pointOfInterest) {
+        mCompositeSubscription.add(mDataManager.deleteLocation(pointOfInterest)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
-                .subscribe(new Subscriber<Location>() {
+                .subscribe(new Subscriber<PointOfInterest>() {
                     @Override
                     public void onCompleted() {
                         SnackbarFactory.createSnackbar(
@@ -234,8 +234,8 @@ public class MainActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(Location location) {
-                        mEasyRecycleAdapter.removeItem(location);
+                    public void onNext(PointOfInterest pointOfInterest) {
+                        mEasyRecycleAdapter.removeItem(pointOfInterest);
                     }
                 }));
     }
@@ -267,8 +267,8 @@ public class MainActivity extends BaseActivity {
 
     private LocationHolder.LocationListener mLocationListener = new LocationHolder.LocationListener() {
         @Override
-        public void onLocationLongPress(Location location) {
-            showDeleteDialog(location);
+        public void onLocationLongPress(PointOfInterest pointOfInterest) {
+            showDeleteDialog(pointOfInterest);
         }
     };
 

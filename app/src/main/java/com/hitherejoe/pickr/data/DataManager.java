@@ -16,7 +16,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.data.model.PlaceAutocomplete;
 import com.hitherejoe.pickr.injection.component.DaggerDataManagerComponent;
 import com.hitherejoe.pickr.injection.module.DataManagerModule;
@@ -32,7 +32,6 @@ import rx.Scheduler;
 import rx.Subscriber;
 import rx.functions.Action0;
 import rx.functions.Func1;
-import timber.log.Timber;
 
 public class DataManager {
 
@@ -68,29 +67,29 @@ public class DataManager {
         return mSubscribeScheduler;
     }
 
-    public Observable<List<Location>> getLocations() {
+    public Observable<List<PointOfInterest>> getLocations() {
         return mDatabaseHelper.getLocations();
     }
 
-    public Observable<Location> saveLocation(final Context context, final Location location) {
+    public Observable<PointOfInterest> saveLocation(final Context context, final PointOfInterest pointOfInterest) {
 
-        return doesLocationExist(location.id).flatMap(new Func1<Boolean, Observable<Location>>() {
+        return doesLocationExist(pointOfInterest.id).flatMap(new Func1<Boolean, Observable<PointOfInterest>>() {
             @Override
-            public Observable<Location> call(Boolean doesLocationExist) {
+            public Observable<PointOfInterest> call(Boolean doesLocationExist) {
                 if (doesLocationExist) return Observable.just(null);
 
-                return mDatabaseHelper.saveLocation(location).doOnCompleted(new Action0() {
+                return mDatabaseHelper.saveLocation(pointOfInterest).doOnCompleted(new Action0() {
                     @Override
                     public void call() {
-                        postEventSafely(context, new BusEvent.PlaceAdded(location));
+                        postEventSafely(context, new BusEvent.PlaceAdded(pointOfInterest));
                     }
                 });
             }
         });
     }
 
-    public Observable<Location> deleteLocation(Location location) {
-        return mDatabaseHelper.deleteLocation(location);
+    public Observable<PointOfInterest> deleteLocation(PointOfInterest pointOfInterest) {
+        return mDatabaseHelper.deleteLocation(pointOfInterest);
     }
 
     public Observable<PlaceAutocomplete> getAutocompleteResults(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
@@ -125,10 +124,10 @@ public class DataManager {
     }
 
     public Observable<Boolean> doesLocationExist(String id) {
-        return mDatabaseHelper.getLocation(id).flatMap(new Func1<Location, Observable<Boolean>>() {
+        return mDatabaseHelper.getLocation(id).flatMap(new Func1<PointOfInterest, Observable<Boolean>>() {
             @Override
-            public Observable<Boolean> call(Location location) {
-                return Observable.just(location != null);
+            public Observable<Boolean> call(PointOfInterest pointOfInterest) {
+                return Observable.just(pointOfInterest != null);
             }
         });
     }

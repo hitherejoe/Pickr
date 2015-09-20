@@ -3,7 +3,7 @@ package com.hitherejoe.pickr.data.local;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
 
@@ -27,39 +27,39 @@ public class DatabaseHelper {
         return mBriteDb;
     }
 
-    public Observable<Location> saveLocation(final Location location) {
-        return Observable.create(new Observable.OnSubscribe<Location>() {
+    public Observable<PointOfInterest> saveLocation(final PointOfInterest pointOfInterest) {
+        return Observable.create(new Observable.OnSubscribe<PointOfInterest>() {
             @Override
-            public void call(Subscriber<? super Location> subscriber) {
-                mBriteDb.insert(Db.LocationTable.TABLE_NAME, Db.LocationTable.toContentValues(location));
-                subscriber.onNext(location);
+            public void call(Subscriber<? super PointOfInterest> subscriber) {
+                mBriteDb.insert(Db.PointOfInterestTable.TABLE_NAME, Db.PointOfInterestTable.toContentValues(pointOfInterest));
+                subscriber.onNext(pointOfInterest);
                 subscriber.onCompleted();
             }
         });
     }
 
-    public Observable<Location> deleteLocation(final Location location) {
-        return Observable.create(new Observable.OnSubscribe<Location>() {
+    public Observable<PointOfInterest> deleteLocation(final PointOfInterest pointOfInterest) {
+        return Observable.create(new Observable.OnSubscribe<PointOfInterest>() {
             @Override
-            public void call(Subscriber<? super Location> subscriber) {
-                mBriteDb.delete(Db.LocationTable.TABLE_NAME, Db.LocationTable.COLUMN_ID + "=?", location.id);
-                subscriber.onNext(location);
+            public void call(Subscriber<? super PointOfInterest> subscriber) {
+                mBriteDb.delete(Db.PointOfInterestTable.TABLE_NAME, Db.PointOfInterestTable.COLUMN_ID + "=?", pointOfInterest.id);
+                subscriber.onNext(pointOfInterest);
                 subscriber.onCompleted();
             }
         });
     }
 
-    public Observable<Location> getLocation(final String id) {
-        return mBriteDb.createQuery(Db.LocationTable.TABLE_NAME,
-                "SELECT * FROM " + Db.LocationTable.TABLE_NAME + " WHERE " + Db.LocationTable.COLUMN_ID + "=?", id)
-                .map(new Func1<SqlBrite.Query, Location>() {
+    public Observable<PointOfInterest> getLocation(final String id) {
+        return mBriteDb.createQuery(Db.PointOfInterestTable.TABLE_NAME,
+                "SELECT * FROM " + Db.PointOfInterestTable.TABLE_NAME + " WHERE " + Db.PointOfInterestTable.COLUMN_ID + "=?", id)
+                .map(new Func1<SqlBrite.Query, PointOfInterest>() {
                     @Override
-                    public Location call(SqlBrite.Query query) {
-                        Location result = null;
+                    public PointOfInterest call(SqlBrite.Query query) {
+                        PointOfInterest result = null;
                         Cursor cursor = query.run();
                         if (cursor.moveToFirst()) {
-                            Location location = Db.LocationTable.parseCursor(cursor);
-                            if (location.id.equals(id)) result = location;
+                            PointOfInterest pointOfInterest = Db.PointOfInterestTable.parseCursor(cursor);
+                            if (pointOfInterest.id.equals(id)) result = pointOfInterest;
                         }
                         cursor.close();
                         return result;
@@ -67,18 +67,18 @@ public class DatabaseHelper {
                 });
     }
 
-    public Observable<List<Location>> getLocations() {
-        return mBriteDb.createQuery(Db.LocationTable.TABLE_NAME,
-                "SELECT * FROM " + Db.LocationTable.TABLE_NAME)
-                .map(new Func1<SqlBrite.Query, List<Location>>() {
+    public Observable<List<PointOfInterest>> getLocations() {
+        return mBriteDb.createQuery(Db.PointOfInterestTable.TABLE_NAME,
+                "SELECT * FROM " + Db.PointOfInterestTable.TABLE_NAME)
+                .map(new Func1<SqlBrite.Query, List<PointOfInterest>>() {
                     @Override
-                    public List<Location> call(SqlBrite.Query query) {
+                    public List<PointOfInterest> call(SqlBrite.Query query) {
                         Cursor cursor = query.run();
-                        List<Location> result = new ArrayList<>();
+                        List<PointOfInterest> result = new ArrayList<>();
                         while (cursor.moveToNext()) {
-                            Location l = Db.LocationTable.parseCursor(cursor);
+                            PointOfInterest l = Db.PointOfInterestTable.parseCursor(cursor);
                             if(l.name.equals("Warsaw")) Timber.e("LOCATION: " + l.id);
-                            result.add(Db.LocationTable.parseCursor(cursor));
+                            result.add(Db.PointOfInterestTable.parseCursor(cursor));
                         }
                         cursor.close();
                         return result;

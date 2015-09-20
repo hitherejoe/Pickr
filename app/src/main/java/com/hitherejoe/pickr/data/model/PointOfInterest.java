@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.Locale;
 
-public class Location implements Parcelable {
+public class PointOfInterest implements Parcelable {
 
     public String id;
     public String name;
@@ -23,19 +23,19 @@ public class Location implements Parcelable {
     public Uri websiteUri;
     public Locale locale;
 
-    public static Location fromPlace(Place place) {
-        Location location = new Location();
-        location.id = place.getId();
-        location.name = place.getName().toString();
-        location.address = place.getAddress().toString();
-        location.latLng = place.getLatLng();
-        location.phoneNumber = place.getPhoneNumber().toString();
-        location.priceLevel = place.getPriceLevel();
-        location.rating = place.getRating();
-        location.latLngBounds = place.getViewport();
-        location.websiteUri = place.getWebsiteUri();
-        location.locale = place.getLocale();
-        return location;
+    public static PointOfInterest fromPlace(Place place) {
+        PointOfInterest pointOfInterest = new PointOfInterest();
+        pointOfInterest.id = place.getId();
+        pointOfInterest.name = place.getName().toString();
+        pointOfInterest.address = place.getAddress().toString();
+        pointOfInterest.latLng = place.getLatLng();
+        pointOfInterest.phoneNumber = place.getPhoneNumber().toString();
+        pointOfInterest.priceLevel = place.getPriceLevel();
+        pointOfInterest.rating = place.getRating();
+        pointOfInterest.latLngBounds = place.getViewport();
+        pointOfInterest.websiteUri = place.getWebsiteUri();
+        pointOfInterest.locale = place.getLocale();
+        return pointOfInterest;
     }
 
     @Override
@@ -57,9 +57,9 @@ public class Location implements Parcelable {
         dest.writeSerializable(this.locale);
     }
 
-    public Location() { }
+    public PointOfInterest() { }
 
-    protected Location(Parcel in) {
+    protected PointOfInterest(Parcel in) {
         this.id = in.readString();
         this.name = in.readString();
         this.address = in.readString();
@@ -72,13 +72,13 @@ public class Location implements Parcelable {
         this.locale = (Locale) in.readSerializable();
     }
 
-    public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
-        public Location createFromParcel(Parcel source) {
-            return new Location(source);
+    public static final Parcelable.Creator<PointOfInterest> CREATOR = new Parcelable.Creator<PointOfInterest>() {
+        public PointOfInterest createFromParcel(Parcel source) {
+            return new PointOfInterest(source);
         }
 
-        public Location[] newArray(int size) {
-            return new Location[size];
+        public PointOfInterest[] newArray(int size) {
+            return new PointOfInterest[size];
         }
     };
 }

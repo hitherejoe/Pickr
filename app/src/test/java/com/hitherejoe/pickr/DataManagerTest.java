@@ -6,7 +6,7 @@ import android.database.Cursor;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
 import com.hitherejoe.pickr.data.local.Db;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
 import com.hitherejoe.pickr.util.DefaultConfig;
 import com.hitherejoe.pickr.util.MockModelsUtil;
@@ -53,16 +53,16 @@ public class DataManagerTest {
     @Test
     public void shouldSyncCharacters() throws Exception {
         int[] ids = new int[]{ 10034, 14050, 10435, 35093 };
-        List<Location> locations = MockModelsUtil.createListOfMockCharacters(4);
+        List<PointOfInterest> pointOfInterests = MockModelsUtil.createListOfMockCharacters(4);
         for (int i = 0; i < ids.length; i++) {
             when(mMockAndroidBoilerplateService.getCharacter(ids[i]))
-                    .thenReturn(Observable.just(locations.get(i)));
+                    .thenReturn(Observable.just(pointOfInterests.get(i)));
         }
 
-        TestSubscriber<Location> result = new TestSubscriber<>();
+        TestSubscriber<PointOfInterest> result = new TestSubscriber<>();
         mDataManager.syncCharacters(ids).subscribe(result);
         result.assertNoErrors();
-        result.assertReceivedOnNext(locations);
+        result.assertReceivedOnNext(pointOfInterests);
 
         Cursor cursor = mDatabaseHelper.getBriteDb()
                 .query("SELECT * FROM " + Db.CharacterTable.TABLE_NAME);

@@ -1,13 +1,13 @@
 package com.hitherejoe.pickr.data;
 
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 
 public class BusEvent {
     public static class PlaceAdded {
-        public Location location;
+        public PointOfInterest pointOfInterest;
 
-        public PlaceAdded(Location location) {
-            this.location = location;
+        public PlaceAdded(PointOfInterest pointOfInterest) {
+            this.pointOfInterest = pointOfInterest;
         }
     }
 }

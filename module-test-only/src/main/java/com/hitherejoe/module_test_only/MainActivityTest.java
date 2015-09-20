@@ -7,7 +7,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.ui.activity.MainActivity;
 import com.hitherejoe.pickr.util.MockModelsUtil;
 import com.hitherejoe.module_test_only.injection.TestComponentRule;
@@ -55,38 +55,38 @@ public class MainActivityTest {
     public void testCharactersShowAndAreScrollableInFeed() {
         int[] characterIds =
                 InstrumentationRegistry.getTargetContext().getResources().getIntArray(com.hitherejoe.pickr.R.array.characters);
-        List<Location> mockLocations = MockModelsUtil.createListOfMockCharacters(characterIds.length);
-        stubMockCharacters(characterIds, mockLocations);
+        List<PointOfInterest> mockPointOfInterests = MockModelsUtil.createListOfMockCharacters(characterIds.length);
+        stubMockCharacters(characterIds, mockPointOfInterests);
         main.launchActivity(null);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        checkCharactersDisplayOnRecyclerView(mockLocations);
+        checkCharactersDisplayOnRecyclerView(mockPointOfInterests);
     }
 
     @Test
     public void testCharactersNoDescriptionIsShown() {
         when(component.getMockWatchTowerService().getCharacter(anyInt()))
-                .thenReturn(Observable.<Location>empty());
+                .thenReturn(Observable.<PointOfInterest>empty());
         int[] characterIds = new int[]{ 1 };
-        Location mockLocation = MockModelsUtil.createMockCharacter();
-        List<Location> mockLocations = new ArrayList<>();
-        mockLocations.add(mockLocation);
-        stubMockCharacters(characterIds, mockLocations);
+        PointOfInterest mockPointOfInterest = MockModelsUtil.createMockCharacter();
+        List<PointOfInterest> mockPointOfInterests = new ArrayList<>();
+        mockPointOfInterests.add(mockPointOfInterest);
+        stubMockCharacters(characterIds, mockPointOfInterests);
         main.launchActivity(null);
-        checkCharactersDisplayOnRecyclerView(mockLocations);
+        checkCharactersDisplayOnRecyclerView(mockPointOfInterests);
     }
 
     @Test
     public void testClickOnCardOpensCharacterActivity() {
         int[] characterIds =
                 InstrumentationRegistry.getTargetContext().getResources().getIntArray(com.hitherejoe.pickr.R.array.characters);
-        List<Location> mockLocations = MockModelsUtil.createListOfMockCharacters(characterIds.length);
-        stubMockCharacters(characterIds, mockLocations);
+        List<PointOfInterest> mockPointOfInterests = MockModelsUtil.createListOfMockCharacters(characterIds.length);
+        stubMockCharacters(characterIds, mockPointOfInterests);
         main.launchActivity(null);
-        onView(withText(mockLocations.get(0).name))
+        onView(withText(mockPointOfInterests.get(0).name))
                 .perform(click());
         onView(withText(com.hitherejoe.pickr.R.string.text_lorem_ipsum))
                 .check(matches(isDisplayed()));
@@ -95,12 +95,12 @@ public class MainActivityTest {
     @Test
     public void testClickOnView() {
         when(component.getMockWatchTowerService().getCharacter(anyInt()))
-                .thenReturn(Observable.<Location>empty());
+                .thenReturn(Observable.<PointOfInterest>empty());
         int[] characterIds = new int[]{ 1 };
-        Location mockLocation = MockModelsUtil.createMockCharacter();
-        List<Location> mockLocations = new ArrayList<>();
-        mockLocations.add(mockLocation);
-        stubMockCharacters(characterIds, mockLocations);
+        PointOfInterest mockPointOfInterest = MockModelsUtil.createMockCharacter();
+        List<PointOfInterest> mockPointOfInterests = new ArrayList<>();
+        mockPointOfInterests.add(mockPointOfInterest);
+        stubMockCharacters(characterIds, mockPointOfInterests);
         main.launchActivity(null);
         onView(withText("View"))
                 .perform(click());
@@ -111,12 +111,12 @@ public class MainActivityTest {
     @Test
     public void testClickOnCollections() {
         when(component.getMockWatchTowerService().getCharacter(anyInt()))
-                .thenReturn(Observable.<Location>empty());
+                .thenReturn(Observable.<PointOfInterest>empty());
         int[] characterIds = new int[]{ 1 };
-        Location mockLocation = MockModelsUtil.createMockCharacter();
-        List<Location> mockLocations = new ArrayList<>();
-        mockLocations.add(mockLocation);
-        stubMockCharacters(characterIds, mockLocations);
+        PointOfInterest mockPointOfInterest = MockModelsUtil.createMockCharacter();
+        List<PointOfInterest> mockPointOfInterests = new ArrayList<>();
+        mockPointOfInterests.add(mockPointOfInterest);
+        stubMockCharacters(characterIds, mockPointOfInterests);
         main.launchActivity(null);
         onView(withText("Collections"))
                 .perform(click());
@@ -124,7 +124,7 @@ public class MainActivityTest {
                 .check(matches(isDisplayed()));
     }
 
-    private void checkCharactersDisplayOnRecyclerView(List<Location> charactersToCheck) {
+    private void checkCharactersDisplayOnRecyclerView(List<PointOfInterest> charactersToCheck) {
         for (int i = 0; i < charactersToCheck.size(); i++) {
             onView(withId(com.hitherejoe.pickr.R.id.recycler_characters))
                     .perform(RecyclerViewActions.scrollToPosition(i));
@@ -132,15 +132,15 @@ public class MainActivityTest {
         }
     }
 
-    private void checkCharacterDisplays(Location location) {
-        onView(withText(location.name))
+    private void checkCharacterDisplays(PointOfInterest pointOfInterest) {
+        onView(withText(pointOfInterest.name))
                 .check(matches(isDisplayed()));
     }
 
-    private void stubMockCharacters(int[] ids, List<Location> mockLocations) {
-        for (int i = 0; i < mockLocations.size(); i++) {
+    private void stubMockCharacters(int[] ids, List<PointOfInterest> mockPointOfInterests) {
+        for (int i = 0; i < mockPointOfInterests.size(); i++) {
             when(component.getMockWatchTowerService().getCharacter(ids[i]))
-                    .thenReturn(Observable.just(mockLocations.get(i)));
+                    .thenReturn(Observable.just(mockPointOfInterests.get(i)));
         }
     }
 }

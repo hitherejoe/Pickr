@@ -1,6 +1,6 @@
 package com.hitherejoe.pickr.util;
 
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,18 +12,18 @@ public class MockModelsUtil {
         return UUID.randomUUID().toString();
     }
 
-    public static Location createMockCharacter() {
-        Location location = new Location();
-        location.name = generateRandomString();
-        return location;
+    public static PointOfInterest createMockCharacter() {
+        PointOfInterest pointOfInterest = new PointOfInterest();
+        pointOfInterest.name = generateRandomString();
+        return pointOfInterest;
     }
 
-    public static List<Location> createListOfMockCharacters(int count) {
-        List<Location> locations = new ArrayList<>();
+    public static List<PointOfInterest> createListOfMockCharacters(int count) {
+        List<PointOfInterest> pointOfInterests = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            locations.add(createMockCharacter());
+            pointOfInterests.add(createMockCharacter());
         }
-        return locations;
+        return pointOfInterests;
     }
 
 }

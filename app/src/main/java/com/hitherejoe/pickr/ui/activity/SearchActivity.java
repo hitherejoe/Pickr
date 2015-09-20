@@ -3,6 +3,7 @@ package com.hitherejoe.pickr.ui.activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.ActionBar;
@@ -25,11 +26,9 @@ import com.google.maps.android.SphericalUtil;
 import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.DataManager;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.ui.adapter.SearchHolder;
 import com.hitherejoe.pickr.util.DialogFactory;
-import com.hitherejoe.pickr.util.SnackbarFactory;
-import com.hitherejoe.pickr.util.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +66,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     private EasyRecyclerAdapter<Place> mEasyRecycleAdapter;
     private ProgressDialog mProgressDialog;
     private ReactiveLocationProvider mLocationProvider;
-    private android.location.Location mCurrentKnownLocation;
+    private Location mCurrentKnownLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,38 +156,37 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .setInterval(TimeUnit.MINUTES.toMillis(1));
 
         Observable<android.location.Location> lastKnownLocationObservable = mLocationProvider.getLastKnownLocation();
-        mSubscriptions.add(
-                new ReactiveLocationProvider(this)
-                        .getUpdatedLocation(request)
-                        .onErrorResumeNext(lastKnownLocationObservable)
-                        .startWith(lastKnownLocationObservable)
-                        .subscribe(new Observer<android.location.Location>() {
-                            @Override
-                            public void onCompleted() {
-                            }
+        mSubscriptions.add(new ReactiveLocationProvider(this)
+                .getUpdatedLocation(request)
+                .onErrorResumeNext(lastKnownLocationObservable)
+                .startWith(lastKnownLocationObservable)
+                .subscribe(new Observer<Location>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                mProgressDialog.dismiss();
-                                Timber.e("Couldn't get users current location " + e);
-                            }
+                    @Override
+                    public void onError(Throwable e) {
+                        mProgressDialog.dismiss();
+                        Timber.e("Couldn't get users current location " + e);
+                    }
 
-                            @Override
-                            public void onNext(android.location.Location location) {
-                                mCurrentKnownLocation = location;
-                                mProgressDialog.dismiss();
-                            }
-                        }));
+                    @Override
+                    public void onNext(Location location) {
+                        mCurrentKnownLocation = location;
+                        mProgressDialog.dismiss();
+                    }
+                }));
     }
 
     private void savePlace(final Place place) {
         mProgressDialog = DialogFactory.createProgressDialog(this, R.string.text_saving_location);
         mProgressDialog.show();
-        Location location = Location.fromPlace(place);
-        mSubscriptions.add(mDataManager.saveLocation(this, location)
+        PointOfInterest pointOfInterest = PointOfInterest.fromPlace(place);
+        mSubscriptions.add(mDataManager.saveLocation(this, pointOfInterest)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
-                .subscribe(new Subscriber<Location>() {
+                .subscribe(new Subscriber<PointOfInterest>() {
                     @Override
                     public void onCompleted() { }
 
@@ -198,9 +196,9 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                     }
 
                     @Override
-                    public void onNext(Location location) {
+                    public void onNext(PointOfInterest pointOfInterest) {
                         mProgressDialog.dismiss();
-                        if (location == null) {
+                        if (pointOfInterest == null) {
                             if (mDialog == null) {
                                 mDialog = DialogFactory.createSimpleOkErrorDialog(
                                         SearchActivity.this,

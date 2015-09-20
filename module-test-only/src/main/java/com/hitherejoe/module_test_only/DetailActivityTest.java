@@ -8,7 +8,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.hitherejoe.pickr.R;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.util.MockModelsUtil;
 import com.hitherejoe.module_test_only.injection.TestComponentRule;
 
@@ -45,15 +45,15 @@ public class DetailActivityTest {
 
     @Test
     public void testCharacterCollectionsDisplayed() {
-        Location mockLocation = MockModelsUtil.createMockCharacter();
-        Intent i = DetailActivity.getStartIntent(mContext, mockLocation);
+        PointOfInterest mockPointOfInterest = MockModelsUtil.createMockCharacter();
+        Intent i = DetailActivity.getStartIntent(mContext, mockPointOfInterest);
         main.launchActivity(i);
         String[] tabTitles =
                 InstrumentationRegistry.getTargetContext().getResources().getStringArray(com.hitherejoe.pickr.R.array.detail_fragment_titles);
-        checkTextIsShownInTab(tabTitles[0], mockLocation.films);
-        checkTextIsShownInTab(tabTitles[1], mockLocation.vehicles);
-        checkTextIsShownInTab(tabTitles[2], mockLocation.species);
-        checkTextIsShownInTab(tabTitles[3], mockLocation.starships);
+        checkTextIsShownInTab(tabTitles[0], mockPointOfInterest.films);
+        checkTextIsShownInTab(tabTitles[1], mockPointOfInterest.vehicles);
+        checkTextIsShownInTab(tabTitles[2], mockPointOfInterest.species);
+        checkTextIsShownInTab(tabTitles[3], mockPointOfInterest.starships);
     }
 
     private void checkTextIsShownInTab(String tab, List<String> items) {

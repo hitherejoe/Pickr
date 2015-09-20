@@ -7,7 +7,7 @@ import android.net.Uri;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.gson.Gson;
-import com.hitherejoe.pickr.data.model.Location;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.util.DataUtils;
 
 import java.util.Locale;
@@ -16,8 +16,8 @@ public class Db {
 
     public Db() { }
 
-    public static abstract class LocationTable {
-        public static final String TABLE_NAME = "locations";
+    public static abstract class PointOfInterestTable {
+        public static final String TABLE_NAME = "point_of_interests";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_ADDRESS = "address";
@@ -43,36 +43,36 @@ public class Db {
                         COLUMN_LOCALE + " TEXT NOT NULL" +
                         " ); ";
 
-        public static ContentValues toContentValues(Location location) {
+        public static ContentValues toContentValues(PointOfInterest pointOfInterest) {
             Gson gson = DataUtils.getGsonInstance();
             ContentValues values = new ContentValues();
-            values.put(COLUMN_ID, location.id);
-            values.put(COLUMN_NAME, location.name);
-            values.put(COLUMN_ADDRESS, location.address);
-            values.put(COLUMN_LAT_LNG, gson.toJson(location.latLng));
-            values.put(COLUMN_PHONE, location.phoneNumber);
-            values.put(COLUMN_PRICE, location.priceLevel);
-            values.put(COLUMN_RATING, location.rating);
-            values.put(COLUMN_LAT_LNG_BOUNDS, gson.toJson(location.latLngBounds));
-            values.put(COLUMN_WEBSITE, gson.toJson(location.websiteUri));
-            values.put(COLUMN_LOCALE, gson.toJson(location.locale));
+            values.put(COLUMN_ID, pointOfInterest.id);
+            values.put(COLUMN_NAME, pointOfInterest.name);
+            values.put(COLUMN_ADDRESS, pointOfInterest.address);
+            values.put(COLUMN_LAT_LNG, gson.toJson(pointOfInterest.latLng));
+            values.put(COLUMN_PHONE, pointOfInterest.phoneNumber);
+            values.put(COLUMN_PRICE, pointOfInterest.priceLevel);
+            values.put(COLUMN_RATING, pointOfInterest.rating);
+            values.put(COLUMN_LAT_LNG_BOUNDS, gson.toJson(pointOfInterest.latLngBounds));
+            values.put(COLUMN_WEBSITE, gson.toJson(pointOfInterest.websiteUri));
+            values.put(COLUMN_LOCALE, gson.toJson(pointOfInterest.locale));
             return values;
         }
 
-        public static Location parseCursor(Cursor cursor) {
+        public static PointOfInterest parseCursor(Cursor cursor) {
             Gson gson = DataUtils.getGsonInstance();
-            Location location = new Location();
-            location.id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID));
-            location.name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
-            location.address = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDRESS));
-            location.latLng = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAT_LNG)), LatLng.class);
-            location.phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PHONE));
-            location.priceLevel = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PRICE));
-            location.rating = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_RATING));
-            location.latLngBounds = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAT_LNG_BOUNDS)), LatLngBounds.class);
-            if (location.websiteUri != null) location.websiteUri = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_WEBSITE)));
-            location.locale = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCALE)), Locale.class);
-            return location;
+            PointOfInterest pointOfInterest = new PointOfInterest();
+            pointOfInterest.id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID));
+            pointOfInterest.name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
+            pointOfInterest.address = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDRESS));
+            pointOfInterest.latLng = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAT_LNG)), LatLng.class);
+            pointOfInterest.phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PHONE));
+            pointOfInterest.priceLevel = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PRICE));
+            pointOfInterest.rating = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_RATING));
+            pointOfInterest.latLngBounds = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAT_LNG_BOUNDS)), LatLngBounds.class);
+            if (pointOfInterest.websiteUri != null) pointOfInterest.websiteUri = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_WEBSITE)));
+            pointOfInterest.locale = gson.fromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCALE)), Locale.class);
+            return pointOfInterest;
         }
     }
 }
