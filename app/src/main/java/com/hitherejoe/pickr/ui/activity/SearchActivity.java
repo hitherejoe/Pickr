@@ -1,5 +1,6 @@
 package com.hitherejoe.pickr.ui.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.hitherejoe.pickr.data.model.Location;
 import com.hitherejoe.pickr.ui.adapter.SearchHolder;
 import com.hitherejoe.pickr.util.DialogFactory;
 import com.hitherejoe.pickr.util.SnackbarFactory;
+import com.hitherejoe.pickr.util.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -61,6 +63,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     private CompositeSubscription mSubscriptions;
     private DataManager mDataManager;
+    private Dialog mDialog;
     private EasyRecyclerAdapter<Place> mEasyRecycleAdapter;
     private ProgressDialog mProgressDialog;
     private ReactiveLocationProvider mLocationProvider;
@@ -85,6 +88,12 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
         retrieveDeviceCurrentLocation();
         setupToolbar();
         setupRecyclerView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mDialog != null) mDialog.dismiss();
     }
 
     @Override
@@ -173,7 +182,6 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
     private void savePlace(final Place place) {
-        Timber.e("IDDD " + place.getId());
         mProgressDialog = DialogFactory.createProgressDialog(this, R.string.text_saving_location);
         mProgressDialog.show();
         Location location = Location.fromPlace(place);
@@ -192,7 +200,18 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                     @Override
                     public void onNext(Location location) {
                         mProgressDialog.dismiss();
-                        finish();
+                        if (location == null) {
+                            if (mDialog == null) {
+                                mDialog = DialogFactory.createSimpleOkErrorDialog(
+                                        SearchActivity.this,
+                                        getString(R.string.dialog_error_title),
+                                        getString(R.string.text_place_exists)
+                                );
+                            }
+                            mDialog.show();
+                        } else {
+                            finish();
+                        }
                     }
                 }));
     }

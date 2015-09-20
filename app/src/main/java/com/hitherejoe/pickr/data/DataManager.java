@@ -76,10 +76,9 @@ public class DataManager {
 
         return doesLocationExist(location.id).flatMap(new Func1<Boolean, Observable<Location>>() {
             @Override
-            public Observable<Location> call(Boolean aBoolean) {
-                if (aBoolean) {
-                    return Observable.just(null);
-                }
+            public Observable<Location> call(Boolean doesLocationExist) {
+                if (doesLocationExist) return Observable.just(null);
+
                 return mDatabaseHelper.saveLocation(location).doOnCompleted(new Action0() {
                     @Override
                     public void call() {

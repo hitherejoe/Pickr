@@ -164,7 +164,13 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onNext(Location location) {
-                        Timber.e("IN MAIN NEXT");
+                        if (location == null) {
+                            SnackbarFactory.createSnackbar(
+                                    MainActivity.this,
+                                    mLayoutRoot,
+                                    getString(R.string.text_place_exists)
+                            ).show();
+                        }
                     }
                 }));
     }
