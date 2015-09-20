@@ -27,7 +27,7 @@ import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.model.PointOfInterest;
-import com.hitherejoe.pickr.ui.adapter.SearchHolder;
+import com.hitherejoe.pickr.ui.adapter.AutocompletePlaceHolder;
 import com.hitherejoe.pickr.util.DialogFactory;
 
 import java.util.ArrayList;
@@ -123,7 +123,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     private void setupRecyclerView() {
         mPlacesRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mEasyRecycleAdapter = new EasyRecyclerAdapter<>(this, SearchHolder.class, mLocationListener);
+        mEasyRecycleAdapter = new EasyRecyclerAdapter<>(this, AutocompletePlaceHolder.class, mLocationListener);
         mPlacesRecycler.setAdapter(mEasyRecycleAdapter);
     }
 
@@ -249,7 +249,7 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
         return new LatLngBounds(southwest, northeast);
     }
 
-    private SearchHolder.LocationListener mLocationListener = new SearchHolder.LocationListener() {
+    private AutocompletePlaceHolder.LocationListener mLocationListener = new AutocompletePlaceHolder.LocationListener() {
         @Override
         public void onLocationPress(Place location) {
             savePlace(location);
