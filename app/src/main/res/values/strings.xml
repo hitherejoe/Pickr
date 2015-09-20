@@ -48,7 +48,7 @@
     <string name="dialog_error_no_connection">Sorry, you need a connection to do that!</string>
     <string name="text_getting_location">Retreiving location...</string>
     <string name="text_saving_location">Saving location...</string>
-    <string name="text_place_exists">Oops, place already exists!</string>
+    <string name="text_place_exists">Oops, that place already exists!</string>
 
 
     <string name="text_place_saved">Place saved</string>
