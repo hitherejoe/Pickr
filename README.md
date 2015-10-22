@@ -1,4 +1,4 @@
-Pickr
+Pickr [![Build Status](https://travis-ci.org/hitherejoe/Pickr.svg?branch=master)](https://travis-ci.org/hitherejoe/Pickr)
 =====
 
 <p align="center">
