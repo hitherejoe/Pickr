@@ -11,6 +11,7 @@ import com.google.maps.android.SphericalUtil;
 
 public class DataUtils {
 
+    //TODO: Implement network checks
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo() != null;

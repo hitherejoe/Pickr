@@ -34,12 +34,12 @@ public class SearchActivityTest {
 
     @Test
     public void testSearchResultsDisplayed() {
-        //Todo: Write test
+        //TODO: Write test
     }
 
     @Test
     public void testClearingSearchFieldResetsViewStates() {
-        //Todo: Write test
+        //TODO: Write test
     }
 
 }

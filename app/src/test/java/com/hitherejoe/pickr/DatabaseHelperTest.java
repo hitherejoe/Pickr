@@ -97,7 +97,7 @@ public class DatabaseHelperTest {
 
     @Test
     public void shouldGetAllLocations() throws Exception {
-        List<PointOfInterest> pointsOfInterest = MockModelsUtil.createListOfMockCharacters(5);
+        List<PointOfInterest> pointsOfInterest = MockModelsUtil.createListOfMockPointOfInterests(5);
         for (PointOfInterest poi : pointsOfInterest) {
             mDatabaseHelper.saveLocation(poi).subscribe();
         }

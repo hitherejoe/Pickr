@@ -5,7 +5,6 @@ import com.hitherejoe.pickr.data.model.PointOfInterest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
@@ -29,7 +28,7 @@ public class MockModelsUtil {
     }
 
 
-    public static List<PointOfInterest> createListOfMockCharacters(int count) {
+    public static List<PointOfInterest> createListOfMockPointOfInterests(int count) {
         List<PointOfInterest> pointOfInterests = new ArrayList<>();
         for (int i = 0; i < count; i++) pointOfInterests.add(createMockPointOfInterest());
         return pointOfInterests;
