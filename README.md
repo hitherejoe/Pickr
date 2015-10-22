@@ -23,7 +23,7 @@ The project is setup using:
 - [Mockito](http://mockito.org/)
 
 <p align="center">
-    <img src="images/device.png" alt="Web Launcher"/>
+    <img src="images/devices.png" alt="Device screenshots"/>
 </p>
 
 
