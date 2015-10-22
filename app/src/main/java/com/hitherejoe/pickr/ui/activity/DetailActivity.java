@@ -19,10 +19,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.model.PointOfInterest;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.util.Locale;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -48,30 +44,6 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
 
     @Bind(R.id.text_phone_number)
     TextView mPhoneNumberText;
-
-    @Bind(R.id.layout_website)
-    LinearLayout mWebsiteLayout;
-
-    @Bind(R.id.text_website)
-    TextView mWebsiteText;
-
-    @Bind(R.id.layout_locale)
-    LinearLayout mLocaleLayout;
-
-    @Bind(R.id.text_locale)
-    TextView mLocaleText;
-
-    @Bind(R.id.layout_rating)
-    LinearLayout mRatingLayout;
-
-    @Bind(R.id.text_rating)
-    TextView mRatingText;
-
-    @Bind(R.id.layout_price)
-    LinearLayout mPriceLayout;
-
-    @Bind(R.id.text_price)
-    TextView mPriceText;
 
     private static final String EXTRA_POI =
             "com.hitherejoe.pickr.ui.activity.DetailActivity.EXTRA_POI";
@@ -121,7 +93,6 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
     }
 
     private void setupLocationData() {
-
         String placeName = mPointOfInterest.name;
         if (placeName != null && !placeName.isEmpty()) {
             mNameText.setText(mPointOfInterest.name);
@@ -142,41 +113,6 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
         } else {
             mPhoneNumberLayout.setVisibility(View.GONE);
         }
-
-        if (mPointOfInterest.websiteUri != null) {
-            try {
-                java.net.URI uri = new java.net.URI(mPointOfInterest.websiteUri.toString());
-                mWebsiteText.setText(uri.toURL().toString());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        } else {
-            mWebsiteLayout.setVisibility(View.GONE);
-        }
-
-        Locale placeLocale = mPointOfInterest.locale;
-        if (placeLocale != null) {
-            mLocaleText.setText(placeLocale.getDisplayName());
-        } else {
-            mLocaleLayout.setVisibility(View.GONE);
-        }
-
-        float placeRating = mPointOfInterest.rating;
-        if (placeRating > 0) {
-            mRatingText.setText(String.valueOf(placeRating));
-        } else {
-            mRatingLayout.setVisibility(View.GONE);
-        }
-
-        float placePrice = mPointOfInterest.priceLevel;
-        if (placePrice > 0) {
-            mPriceText.setText(String.valueOf(placePrice));
-        } else {
-            mPriceLayout.setVisibility(View.GONE);
-        }
-
     }
 
 }

@@ -10,7 +10,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -32,6 +31,7 @@ import rx.Scheduler;
 import rx.Subscriber;
 import rx.functions.Action0;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class DataManager {
 
@@ -132,21 +132,21 @@ public class DataManager {
         });
     }
 
-    public Observable<Place> getPlaces(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
+    public Observable<PointOfInterest> getPredictions(final GoogleApiClient mGoogleApiClient, final String query, final LatLngBounds bounds) {
         return getAutocompleteResults(mGoogleApiClient, query, bounds)
-                .flatMap(new Func1<AutocompletePlace, Observable<Place>>() {
+                .flatMap(new Func1<AutocompletePlace, Observable<PointOfInterest>>() {
                     @Override
-                    public Observable<Place> call(AutocompletePlace autocompletePlace) {
-                        return getPlace(mGoogleApiClient, autocompletePlace.placeId.toString());
+                    public Observable<PointOfInterest> call(AutocompletePlace autocompletePlace) {
+                        return getCompleteResult(mGoogleApiClient, autocompletePlace.placeId.toString());
                     }
                 });
     }
 
-    public Observable<Place> getPlace(final GoogleApiClient mGoogleApiClient, final String id) {
-        return Observable.create(new Observable.OnSubscribe<Place>() {
+    public Observable<PointOfInterest> getCompleteResult(final GoogleApiClient mGoogleApiClient, final String id) {
+        return Observable.create(new Observable.OnSubscribe<PointOfInterest>() {
             @Override
-            public void call(final Subscriber<? super Place> subscriber) {
-                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+            public void call(final Subscriber<? super PointOfInterest> subscriber) {
+                final PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                         .getPlaceById(mGoogleApiClient, id);
                 placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
                     @Override
@@ -155,7 +155,8 @@ public class DataManager {
                             places.release();
                             subscriber.onError(null);
                         } else {
-                            subscriber.onNext(places.get(0));
+                            subscriber.onNext(PointOfInterest.fromPlace(places.get(0)));
+                            places.close();
                             subscriber.onCompleted();
                         }
                     }

@@ -13,6 +13,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,7 +23,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.maps.android.SphericalUtil;
 import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.R;
 import com.hitherejoe.pickr.data.DataManager;
@@ -47,24 +47,23 @@ import uk.co.ribot.easyadapter.EasyRecyclerAdapter;
 
 public class SearchActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    @Bind(R.id.layout_search)
-    CoordinatorLayout mLayoutSearch;
-
     @Bind(R.id.progress_indicator)
     ProgressBar mProgressBar;
 
-    @Bind(R.id.recycler_places)
+    @Bind(R.id.recycler_suggestions)
     RecyclerView mPlacesRecycler;
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+
+    private static final int BOUNDS_RADIUS = 10;
 
     protected GoogleApiClient mGoogleApiClient;
 
     private CompositeSubscription mSubscriptions;
     private DataManager mDataManager;
     private Dialog mDialog;
-    private EasyRecyclerAdapter<Place> mEasyRecycleAdapter;
+    private EasyRecyclerAdapter<PointOfInterest> mEasyRecycleAdapter;
     private Location mCurrentKnownLocation;
     private ProgressDialog mProgressDialog;
     private ReactiveLocationProvider mLocationProvider;
@@ -142,8 +141,13 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
 
             @Override
             public boolean onQueryTextChange(String queryText) {
-                mEasyRecycleAdapter.setItems(new ArrayList<Place>());
-                if (queryText.length() > 0) getAutocompleteResults(queryText);
+                mEasyRecycleAdapter.setItems(new ArrayList<PointOfInterest>());
+                if (queryText.length() > 0) {
+                    getAutocompleteResults(queryText);
+                } else {
+                    mSubscriptions.unsubscribe();
+                    mProgressBar.setVisibility(View.GONE);
+                }
                 return false;
             }
         });
@@ -180,11 +184,10 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 }));
     }
 
-    private void savePlace(final Place place) {
+    private void savePlace(final PointOfInterest pointOfInterest) {
         mProgressDialog = DialogFactory.createProgressDialog(this, R.string.dialog_text_saving_location);
         mProgressDialog.show();
 
-        PointOfInterest pointOfInterest = PointOfInterest.fromPlace(place);
         mSubscriptions.add(mDataManager.saveLocation(this, pointOfInterest)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
@@ -222,12 +225,11 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 mCurrentKnownLocation.getLatitude(),
                 mCurrentKnownLocation.getLongitude()
         );
-        LatLngBounds latLngBounds = DataUtils.latitudeLongitudeToBounds(latLng, 5);
-        mSubscriptions.unsubscribe();
-        mSubscriptions.add(mDataManager.getPlaces(mGoogleApiClient, queryText, latLngBounds)
+        LatLngBounds latLngBounds = DataUtils.latitudeLongitudeToBounds(latLng, BOUNDS_RADIUS);
+        mSubscriptions.add(mDataManager.getPredictions(mGoogleApiClient, queryText, latLngBounds)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
-                .subscribe(new Subscriber<Place>() {
+                .subscribe(new Subscriber<PointOfInterest>() {
                     @Override
                     public void onCompleted() {
                         mProgressBar.setVisibility(View.GONE);
@@ -240,16 +242,16 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                     }
 
                     @Override
-                    public void onNext(Place autocompletePrediction) {
-                        mEasyRecycleAdapter.addItem(autocompletePrediction);
+                    public void onNext(PointOfInterest pointOfInterest) {
+                        mEasyRecycleAdapter.addItem(pointOfInterest);
                     }
                 }));
     }
 
     private AutocompletePlaceHolder.LocationListener mLocationListener = new AutocompletePlaceHolder.LocationListener() {
         @Override
-        public void onLocationPress(Place location) {
-            savePlace(location);
+        public void onLocationPress(PointOfInterest pointOfInterest) {
+            savePlace(pointOfInterest);
         }
     };
 }

@@ -25,7 +25,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -100,90 +100,17 @@
 
                     <TextView
                         style="@style/DetailTextStyle"
-                        android:id="@+id/text_phone_number"/>
+                        android:id="@+id/text_phone_number"
+                        android:autoLink="phone"/>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/layout_website"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TitleTextStyle"
-                        android:id="@+id/text_website_title"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/text_title_website"/>
-
-                    <TextView
-                        style="@style/DetailTextStyle"
-                        android:id="@+id/text_website"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_locale"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TitleTextStyle"
-                        android:id="@+id/text_locale_title"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/text_title_locale"/>
-
-                    <TextView
-                        style="@style/DetailTextStyle"
-                        android:id="@+id/text_locale"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_rating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TitleTextStyle"
-                        android:id="@+id/text_rating_title"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/text_title_rating"/>
-
-                    <TextView
-                        style="@style/DetailTextStyle"
-                        android:id="@+id/text_rating"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TitleTextStyle"
-                        android:id="@+id/text_price_title"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/text_title_price_level"/>
-
-                    <TextView
-                        style="@style/DetailTextStyle"
-                        android:id="@+id/text_price"/>
-
-                </LinearLayout>
+                <!-- not all details are shown here, but you get the idea! -->
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

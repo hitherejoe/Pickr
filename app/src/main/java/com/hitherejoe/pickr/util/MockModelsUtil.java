@@ -23,12 +23,8 @@ public class MockModelsUtil {
         pointOfInterest.address = generateRandomString();
         pointOfInterest.latLng = new LatLng(randomNumber.nextInt(500), randomNumber.nextInt(500));
         pointOfInterest.phoneNumber = generateRandomString();
-        pointOfInterest.priceLevel = randomNumber.nextInt(5);
-        pointOfInterest.rating = randomNumber.nextInt(10);
         pointOfInterest.latLngBounds =
                 DataUtils.latitudeLongitudeToBounds(pointOfInterest.latLng, randomNumber.nextInt(5));
-        pointOfInterest.websiteUri = "www.medium.com/hitherejoe";
-        pointOfInterest.locale = Locale.getDefault();
         return pointOfInterest;
     }
 

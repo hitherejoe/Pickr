@@ -1,8 +1,7 @@
-package com.hitherejoe.module_test_only.injection.component;
+package com.hitherejoe.pickr.injection.component;
 
-import com.hitherejoe.pickr.injection.component.DataManagerComponent;
+import com.hitherejoe.pickr.injection.module.DataManagerTestModule;
 import com.hitherejoe.pickr.injection.scope.PerDataManager;
-import com.hitherejoe.module_test_only.injection.module.DataManagerTestModule;
 
 import dagger.Component;
 

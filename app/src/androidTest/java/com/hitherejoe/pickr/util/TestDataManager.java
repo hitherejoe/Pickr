@@ -1,14 +1,15 @@
-package com.hitherejoe.module_test_only.util;
+package com.hitherejoe.pickr.util;
 
 import android.content.Context;
 
 import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.data.DataManager;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
-import com.hitherejoe.pickr.data.remote.AndroidBoilerplateService;
-import com.hitherejoe.module_test_only.injection.component.DaggerDataManagerTestComponent;
-import com.hitherejoe.module_test_only.injection.component.TestComponent;
-import com.hitherejoe.module_test_only.injection.module.DataManagerTestModule;
+import com.hitherejoe.pickr.injection.component.DaggerDataManagerTestComponent;
+import com.hitherejoe.pickr.injection.component.TestComponent;
+import com.hitherejoe.pickr.injection.module.DataManagerTestModule;
+
+import org.mockito.Mock;
 
 /**
  * Extension of DataManager to be used on a testing environment.
@@ -32,10 +33,6 @@ public class TestDataManager extends DataManager {
                 .dataManagerTestModule(new DataManagerTestModule(context))
                 .build()
                 .inject(this);
-    }
-
-    public AndroidBoilerplateService getAndroidBoilerplateService() {
-        return mAndroidBoilerplateService;
     }
 
     public DatabaseHelper getDatabaseHelper() {

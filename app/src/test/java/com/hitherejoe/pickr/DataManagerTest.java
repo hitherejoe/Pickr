@@ -6,7 +6,6 @@ import com.hitherejoe.pickr.data.local.DatabaseHelper;
 import com.hitherejoe.pickr.data.model.PointOfInterest;
 import com.hitherejoe.pickr.util.DefaultConfig;
 import com.hitherejoe.pickr.util.MockModelsUtil;
-import com.squareup.otto.Bus;
 
 
 import org.junit.Before;
@@ -16,31 +15,37 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import java.util.List;
-
-import rx.schedulers.Schedulers;
+import rx.Observable;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static uk.co.ribot.assertjrx.api.Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = DefaultConfig.EMULATE_SDK, manifest = DefaultConfig.MANIFEST)
 public class DataManagerTest {
 
     private DataManager mDataManager;
-    private DatabaseHelper mDatabaseHelper;
 
     @Before
     public void setUp() {
-        mDatabaseHelper = new DatabaseHelper(RuntimeEnvironment.application);
-        mDatabaseHelper.clearTables().subscribe();
-        mDataManager = new DataManager(mDatabaseHelper, mock(Bus.class), Schedulers.immediate());
+        mDataManager = mock(DataManager.class);
     }
 
     @Test
-    public void shouldSyncCharacters() throws Exception {
-        int[] ids = new int[]{ 10034, 14050, 10435, 35093 };
-        List<PointOfInterest> pointOfInterests = MockModelsUtil.createListOfMockCharacters(4);
+    public void shouldSaveLocation() throws Exception {
+        PointOfInterest pointOfInterest = MockModelsUtil.createMockPointOfInterest();
+        when(mDataManager.saveLocation(RuntimeEnvironment.application, pointOfInterest)).thenReturn(Observable.just(pointOfInterest));
+        assertThat(mDataManager.saveLocation(RuntimeEnvironment.application, pointOfInterest).toBlocking())
+                .emitsSingleValue(pointOfInterest);
+    }
 
+    @Test
+    public void shouldDeleteLocation() throws Exception {
+        PointOfInterest pointOfInterest = MockModelsUtil.createMockPointOfInterest();
+        when(mDataManager.deleteLocation(pointOfInterest)).thenReturn(Observable.just(pointOfInterest));
+        assertThat(mDataManager.deleteLocation(pointOfInterest).toBlocking())
+                .emitsSingleValue(pointOfInterest);
     }
 
 }

@@ -1,6 +1,6 @@
-package com.hitherejoe.module_test_only.util;
+package com.hitherejoe.pickr.util;
 
-import com.hitherejoe.module_test_only.injection.TestComponentRule;
+import com.hitherejoe.pickr.injection.TestComponentRule;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

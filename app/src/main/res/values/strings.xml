@@ -13,14 +13,6 @@
 
     <!-- Detail Activity -->
 
-    <string-array name="detail_fragment_titles">
-        <item>Films</item>
-        <item>Vehicles</item>
-        <item>Species</item>
-        <item>Starships</item>
-    </string-array>
-
-
     <string name="text_title_name">Name</string>
     <string name="text_title_address">Address</string>
     <string name="text_title_phone_number">Phone number</string>

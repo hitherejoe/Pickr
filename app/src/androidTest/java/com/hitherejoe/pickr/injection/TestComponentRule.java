@@ -1,13 +1,14 @@
-package com.hitherejoe.module_test_only.injection;
+package com.hitherejoe.pickr.injection;
 
 
 import android.support.test.InstrumentationRegistry;
 
 import com.hitherejoe.pickr.PickrApplication;
 import com.hitherejoe.pickr.data.local.DatabaseHelper;
-import com.hitherejoe.module_test_only.injection.component.TestComponent;
-import com.hitherejoe.module_test_only.injection.module.ApplicationTestModule;
-import com.hitherejoe.module_test_only.util.TestDataManager;
+import com.hitherejoe.pickr.injection.component.DaggerTestComponent;
+import com.hitherejoe.pickr.injection.component.TestComponent;
+import com.hitherejoe.pickr.injection.module.ApplicationTestModule;
+import com.hitherejoe.pickr.util.TestDataManager;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

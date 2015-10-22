@@ -3,8 +3,8 @@ package com.hitherejoe.pickr.ui.adapter;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.location.places.Place;
 import com.hitherejoe.pickr.R;
+import com.hitherejoe.pickr.data.model.PointOfInterest;
 
 import uk.co.ribot.easyadapter.ItemViewHolder;
 import uk.co.ribot.easyadapter.PositionInfo;
@@ -12,7 +12,7 @@ import uk.co.ribot.easyadapter.annotations.LayoutId;
 import uk.co.ribot.easyadapter.annotations.ViewId;
 
 @LayoutId(R.layout.item_place)
-public class AutocompletePlaceHolder extends ItemViewHolder<Place> {
+public class AutocompletePlaceHolder extends ItemViewHolder<PointOfInterest> {
 
     @ViewId(R.id.text_name)
     TextView mPlaceNameText;
@@ -25,9 +25,9 @@ public class AutocompletePlaceHolder extends ItemViewHolder<Place> {
     }
 
     @Override
-    public void onSetValues(Place place, PositionInfo positionInfo) {
-        mPlaceNameText.setText(place.getName());
-        mPlaceAddressText.setText(place.getAddress());
+    public void onSetValues(PointOfInterest pointOfInterest, PositionInfo positionInfo) {
+        mPlaceNameText.setText(pointOfInterest.name);
+        mPlaceAddressText.setText(pointOfInterest.address);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class AutocompletePlaceHolder extends ItemViewHolder<Place> {
     }
 
     public interface LocationListener {
-        void onLocationPress(Place location);
+        void onLocationPress(PointOfInterest pointOfInterest);
     }
 
 }

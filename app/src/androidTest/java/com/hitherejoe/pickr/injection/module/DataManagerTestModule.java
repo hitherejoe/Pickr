@@ -1,4 +1,4 @@
-package com.hitherejoe.module_test_only.injection.module;
+package com.hitherejoe.pickr.injection.module;
 
 import android.content.Context;
 

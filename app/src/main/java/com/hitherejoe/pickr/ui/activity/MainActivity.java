@@ -50,7 +50,7 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.progress_indicator)
     ProgressBar mProgressBar;
 
-    @Bind(R.id.recycler_characters)
+    @Bind(R.id.recycler_places)
     RecyclerView mPoiRecycler;
 
     @Bind(R.id.text_no_places)
