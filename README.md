@@ -2,7 +2,7 @@ Pickr
 =====
 
 <p align="center">
-    <img src="images/ic_web.png" alt="Web Launcher"/>
+    <img src="images/devices.png" alt="Device screenshots"/>
 </p>
 
 
@@ -21,11 +21,6 @@ The project is setup using:
 - [Butterknife](https://github.com/JakeWharton/butterknife)
 - [Timber] (https://github.com/JakeWharton/timber)
 - [Mockito](http://mockito.org/)
-
-<p align="center">
-    <img src="images/devices.png" alt="Device screenshots"/>
-</p>
-
 
 Requirements
 ------------
