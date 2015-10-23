@@ -37,7 +37,7 @@ Building
 
 To build, install and run a debug version, run this from the root of the project:
 
-    ./gradlew installRunDebug
+    ./gradlew installDebug
     
 Testing
 --------
