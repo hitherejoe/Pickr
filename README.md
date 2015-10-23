@@ -26,7 +26,7 @@ Requirements
 ------------
 
  - [Android SDK](http://developer.android.com/sdk/index.html).
- - Android [5.1 (API 23) ](http://developer.android.com/tools/revisions/platforms.html#5.1).
+ - Android [5.1 (API 22) ](http://developer.android.com/tools/revisions/platforms.html#5.1).
  - Android SDK Tools
  - Android SDK Build tools 23.0.1
  - Android Support library 23.0.1
