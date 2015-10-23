@@ -45,5 +45,7 @@
     <!-- Error messages -->
 
     <string name="error_message_play_services">Sorry, you need Google Play Services to use this app :(</string>
+    <string name="error_message_google_client">Sorry, there was a problem with the Google API client</string>
+    <string name="error_message_saving_place">Sorry, there was a problem saving the place</string>
 
 </resources>

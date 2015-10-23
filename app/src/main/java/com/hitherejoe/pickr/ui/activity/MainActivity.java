@@ -132,8 +132,10 @@ public class MainActivity extends BaseActivity {
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
             Timber.e("GooglePlayServicesRepairableException thrown " + e);
+            DialogFactory.createSimpleErrorDialog(MainActivity.this).show();
         } catch (GooglePlayServicesNotAvailableException e) {
             Timber.e("GooglePlayServicesNotAvailableException thrown " + e);
+            DialogFactory.createSimpleErrorDialog(MainActivity.this).show();
         }
     }
 
@@ -154,8 +156,7 @@ public class MainActivity extends BaseActivity {
                 .subscribeOn(mDataManager.getScheduler())
                 .subscribe(new Subscriber<PointOfInterest>() {
                     @Override
-                    public void onCompleted() {
-                    }
+                    public void onCompleted() { }
 
                     @Override
                     public void onError(Throwable e) {

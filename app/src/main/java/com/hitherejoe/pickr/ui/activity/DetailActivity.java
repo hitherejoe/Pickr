@@ -88,7 +88,7 @@ public class DetailActivity extends BaseActivity implements OnMapReadyCallback {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            mToolbar.setTitle(mPointOfInterest.name);
+            actionBar.setTitle(mPointOfInterest.name);
         }
     }
 

@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,13 +12,11 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -59,7 +56,6 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     private static final int BOUNDS_RADIUS = 10;
 
     protected GoogleApiClient mGoogleApiClient;
-
     private CompositeSubscription mSubscriptions;
     private DataManager mDataManager;
     private Dialog mDialog;
@@ -84,9 +80,9 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
         mLocationProvider = new ReactiveLocationProvider(this);
         mProgressDialog = DialogFactory.createProgressDialog(this, R.string.dialog_text_getting_location);
 
-        retrieveDeviceCurrentLocation();
         setupToolbar();
         setupRecyclerView();
+        retrieveDeviceCurrentLocation();
     }
 
     @Override
@@ -108,8 +104,8 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
         Timber.e("Connection error: " + result.getErrorCode() + " : " + result.getErrorCode());
         DialogFactory.createSimpleOkErrorDialog(
                 this,
-                "Error",
-                "Could not connect to Google API Client: Error " + result.getErrorCode()
+                getString(R.string.dialog_error_title),
+                getString(R.string.error_message_google_client)
         ).show();
     }
 
@@ -161,7 +157,8 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .setSmallestDisplacement(100)
                 .setInterval(TimeUnit.MINUTES.toMillis(1));
 
-        Observable<android.location.Location> lastKnownLocationObservable = mLocationProvider.getLastKnownLocation();
+        Observable<android.location.Location> lastKnownLocationObservable =
+                mLocationProvider.getLastKnownLocation();
         mSubscriptions.add(new ReactiveLocationProvider(this)
                 .getUpdatedLocation(request)
                 .onErrorResumeNext(lastKnownLocationObservable)
@@ -172,8 +169,8 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
 
                     @Override
                     public void onError(Throwable e) {
-                        mProgressDialog.dismiss();
                         Timber.e("Couldn't get users current location " + e);
+                        mProgressDialog.dismiss();
                     }
 
                     @Override
@@ -185,7 +182,8 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
     private void savePlace(final PointOfInterest pointOfInterest) {
-        mProgressDialog = DialogFactory.createProgressDialog(this, R.string.dialog_text_saving_location);
+        mProgressDialog =
+                DialogFactory.createProgressDialog(this, R.string.dialog_text_saving_location);
         mProgressDialog.show();
 
         mSubscriptions.add(mDataManager.saveLocation(this, pointOfInterest)
@@ -198,6 +196,11 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
                     @Override
                     public void onError(Throwable e) {
                         Timber.e("There was an error saving the place... " + e);
+                        DialogFactory.createSimpleOkErrorDialog(
+                                SearchActivity.this,
+                                getString(R.string.dialog_error_title),
+                                getString(R.string.error_message_saving_place)
+                        ).show();
                     }
 
                     @Override
@@ -237,8 +240,8 @@ public class SearchActivity extends BaseActivity implements GoogleApiClient.OnCo
 
                     @Override
                     public void onError(Throwable e) {
-                        mProgressBar.setVisibility(View.GONE);
                         Timber.e("There was an error getting place suggestions... " + e);
+                        mProgressBar.setVisibility(View.GONE);
                     }
 
                     @Override
